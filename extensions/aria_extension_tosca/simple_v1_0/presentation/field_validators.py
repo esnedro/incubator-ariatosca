@@ -469,6 +469,54 @@ def list_node_type_or_group_type_validator(field, presentation, context):
 
 
 #
+# GroupTemplate
+#
+
+def group_members_validator(field, presentation, context):
+    """
+    Makes sure that the field's elements refer to node templates  and that they match the node types
+    declared in the group type.
+
+    Used with the :func:`field_validator` decorator for the ``targets`` field in
+    :class:`GroupTemplate`.
+    """
+
+    field.default_validate(presentation, context)
+
+    values = getattr(presentation, field.name)
+    if values is not None:
+        node_templates = \
+            context.presentation.get('service_template', 'topology_template', 'node_templates') \
+                or {}
+        for value in values:
+            if value not in node_templates:
+                report_issue_for_unknown_type(context, presentation, 'node template', field.name,
+                                              value)
+
+            group_type = presentation._get_type(context)
+            if group_type is None:
+                break
+
+            node_types = group_type._get_members(context)
+
+            is_valid = False
+
+            if value in node_templates:
+                our_node_type = node_templates[value]._get_type(context)
+                for node_type in node_types:
+                    if node_type._is_descendant(context, our_node_type):
+                        is_valid = True
+                        break
+
+            if not is_valid:
+                context.validation.report(
+                    u'group definition target does not match a node type'
+                    u' declared in the group type in "{0}": {1}'
+                    .format(presentation._name, safe_repr(value)),
+                    locator=presentation._locator, level=Issue.BETWEEN_TYPES)
+
+
+#
 # PolicyTemplate
 #
 
@@ -485,13 +533,12 @@ def policy_targets_validator(field, presentation, context):
 
     values = getattr(presentation, field.name)
     if values is not None:
+        node_templates = \
+            context.presentation.get('service_template', 'topology_template', 'node_templates') \
+                or {}
+        groups = context.presentation.get('service_template', 'topology_template', 'groups') \
+            or {}
         for value in values:
-            node_templates = \
-                context.presentation.get('service_template', 'topology_template',
-                                         'node_templates') \
-                or {}
-            groups = context.presentation.get('service_template', 'topology_template', 'groups') \
-                or {}
             if (value not in node_templates) and (value not in groups):
                 report_issue_for_unknown_type(context, presentation, 'node template or group',
                                               field.name, value)

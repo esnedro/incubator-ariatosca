@@ -108,17 +108,18 @@ class ServiceTemplate(common.TemplateHandlerBase):
     def _scaling(self, node_template):
         scaling = node_template.scaling
 
-        if any([scaling['min_instances'] < 0,
+        if any((scaling['min_instances'] < 0,
                 scaling['max_instances'] < scaling['min_instances'],
                 scaling['max_instances'] < 0,
 
                 scaling['default_instances'] < 0,
                 scaling['default_instances'] < scaling['min_instances'],
                 scaling['default_instances'] > scaling['max_instances']
-               ]):
+               )):
             self._topology.report(
                 u'invalid scaling parameters for node template "{0}": min={min_instances}, max='
-                u'{max_instances}, default={default_instances}'.format(self._model.name, **scaling),
+                u'{max_instances}, default={default_instances}'.format(node_template.name,
+                                                                       **scaling),
                 level=self._topology.Issue.BETWEEN_TYPES)
 
         return scaling

@@ -34,6 +34,7 @@ from .modeling.capabilities import (get_inherited_valid_source_types,
 from .modeling.data_types import (get_data_type, get_inherited_constraints, coerce_data_type_value,
                                   validate_data_type_name)
 from .modeling.interfaces import (get_inherited_interface_definitions, get_inherited_operations)
+from .modeling.groups import get_inherited_members
 from .modeling.policies import get_inherited_targets
 from .modeling.parameters import get_inherited_parameter_definitions
 from .modeling.requirements import get_inherited_requirement_definitions
@@ -806,6 +807,11 @@ class GroupType(ExtensiblePresentation):
     @cachedmethod
     def _get_properties(self, context):
         return FrozenDict(get_inherited_parameter_definitions(context, self, 'properties'))
+
+    @cachedmethod
+    def _get_members(self, context):
+        node_types = get_inherited_members(context, self)
+        return FrozenList(node_types)
 
     @cachedmethod
     def _get_interfaces(self, context):

@@ -316,6 +316,10 @@ def create_relationship_template_model(context, service_template, relationship):
     create_parameter_models_from_assignments(model.properties,
                                              relationship.properties,
                                              model_cls=Property)
+    # TODO: does not exist in models, but should
+    #create_parameter_models_from_assignments(model.attributes,
+    #                                         relationship.attributes,
+    #                                         model_cls=Attribute)
     create_interface_template_models(context, service_template, model.interface_templates,
                                      relationship.interfaces)
 
@@ -347,6 +351,10 @@ def create_capability_template_model(context, service_template, capability):
     create_parameter_models_from_assignments(model.properties,
                                              capability.properties,
                                              model_cls=Property)
+    # TODO: does not exist in models, but should
+    #create_parameter_models_from_assignments(model.attributes,
+    #                                         capability.attributes,
+    #                                         model_cls=Attribute)
 
     return model
 

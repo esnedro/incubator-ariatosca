@@ -31,16 +31,19 @@ TYPE_NAME_PLURAL = {
 }
 PRIMITIVE_TYPE_NAMES = ('string', 'integer', 'float', 'boolean')
 PARAMETER_SECTION_NAMES = ('properties', 'attributes')
-TEMPLATE_NAMES = ('node', 'group', 'policy')
+TEMPLATE_NAMES = ('node', 'group', 'relationship', 'policy')
 TEMPLATE_NAME_SECTIONS = {
     'node': 'node_templates',
     'group': 'groups',
+    'relationship': 'relationship_templates',
     'policy': 'policies'
 }
 TEMPLATE_PARAMETER_SECTIONS = (
     ('node', 'properties'),
     ('node', 'attributes'),
     ('group', 'properties'),
+    ('relationship', 'properties'),
+    ('relationship', 'attributes'),
     ('policy', 'properties')
 )
 PARAMETER_SECTIONS = (

@@ -215,6 +215,10 @@ topology_template:
         os_users: # map of os.UserInfo
           root:
             password: admin123
+      capabilities:
+        scalable:
+          properties:
+            max_instances: 2
       interfaces:
         Standard:
           inputs:
@@ -277,7 +281,7 @@ topology_template:
     node_cellar_group:
       type: openstack.Secured
       members:
-        - loadbalancer
+        - loadbalancer_host
         - application_host
         - data_host
       interfaces:
