@@ -18,15 +18,16 @@ sudo: true
 
 language: python
 
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:fkrull/deadsnakes'
-    packages:
-      # Ubuntu 14.04 (trusty) does not come with Python 2.6, so we will install it from Felix
-      # Krull's PPA
-      - python2.6
-      - python2.6-dev
+# We need this only for "sudo: false"
+#addons:
+#  apt:
+#    sources:
+#      - sourceline: 'ppa:fkrull/deadsnakes'
+#    packages:
+#      # Ubuntu 14.04 (trusty) does not come with Python 2.6, so we will install it from Felix
+#      # Krull's PPA
+#      - python2.6
+#      - python2.6-dev
 
 python:
   # We handle Python 2.6 testing from within tox (see tox.ini); note that this means that we run
@@ -53,6 +54,14 @@ env:
   - PYTEST_PROCESSES=1 TOX_ENV=docs
 
 before_install:
+  # Ubuntu 14.04 (trusty) does not come with Python 2.6, so we will install it from Felix Krull's
+  # PPA
+  - if [[ $TOX_ENV = py26* ]]; then
+      sudo add-apt-repository ppa:fkrull/deadsnakes -y;
+      sudo apt-get --quiet update;
+      sudo apt-get --yes install python2.6 python2.6-dev;
+    fi
+
   # Create SSH keys for SSH tests
   - ssh-keygen -f $HOME/.ssh/id_rsa -t rsa -N ''
   - cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
