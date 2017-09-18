@@ -126,7 +126,22 @@ topology_template:
 """).assert_failure()
 
 
-def test_group_members_unicode(parser):
+def test_group_members_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+group_types:
+  MyType: {}
+topology_template:
+  groups:
+    my_policy:
+      type: MyType
+      members: [ unknown ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_group_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -143,16 +158,3 @@ topology_template:
       type: 類型
       members: [ 節點 ]
 """).assert_success()
-
-
-def test_group_members_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-group_types:
-  MyType: {}
-topology_template:
-  groups:
-    my_policy:
-      type: MyType
-      members: [ unknown ]
-""").assert_failure()

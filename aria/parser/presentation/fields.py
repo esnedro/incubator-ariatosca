@@ -488,6 +488,9 @@ class Field(object):
         if is_short_form_field and not is_dict:
             # Handle short form
             value = raw
+            if value is None:
+                # An explicit null
+                value = NULL
         elif is_dict:
             if self.name in raw:
                 value = raw[self.name]
@@ -558,8 +561,8 @@ class Field(object):
     # primitive
 
     def _get_primitive(self, presentation, raw, value, context):
-        if (self.cls is not None and not isinstance(value, self.cls)
-                and value is not None and value is not NULL):
+        if (self.cls is not None) and (not isinstance(value, self.cls)) \
+                and (value is not None):
             try:
                 return self._coerce_primitive(value, context)
             except ValueError as e:
@@ -588,6 +591,8 @@ class Field(object):
             primitive_list = []
             for i, _ in enumerate(value):
                 primitive = value[i]
+                if primitive is None:
+                    primitive = NULL
                 try:
                     primitive = self._coerce_primitive(primitive, context)
                 except ValueError as e:
@@ -627,6 +632,8 @@ class Field(object):
                 context = Field._get_context()
             primitive_dict = OrderedDict()
             for k, v in value.iteritems():
+                if v is None:
+                    v = NULL
                 try:
                     primitive_dict[k] = self._coerce_primitive(v, context)
                 except ValueError as e:
@@ -736,6 +743,8 @@ class Field(object):
                 primitive_dict = OrderedDict()
                 for k, v in raw.iteritems():
                     if k not in presentation.FIELDS:
+                        if v is None:
+                            v = NULL
                         try:
                             primitive_dict[k] = self._coerce_primitive(v, context)
                         except ValueError as e:

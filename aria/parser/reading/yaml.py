@@ -16,9 +16,14 @@ from ...utils.collections import OrderedDict
 from .reader import Reader
 from .locator import Locator
 from .exceptions import ReaderSyntaxError
-from .locator import LocatableString, LocatableInt, LocatableFloat
+from .locator import (LocatableString, LocatableInt, LocatableFloat)
 
-# Add our types to ruamel.yaml
+
+MERGE_TAG = u'tag:yaml.org,2002:merge'
+MAP_TAG = u'tag:yaml.org,2002:map'
+
+
+# Add our types to RoundTripRepresenter
 yaml.representer.RoundTripRepresenter.add_representer(
     LocatableString, yaml.representer.RoundTripRepresenter.represent_unicode)
 yaml.representer.RoundTripRepresenter.add_representer(
@@ -26,8 +31,15 @@ yaml.representer.RoundTripRepresenter.add_representer(
 yaml.representer.RoundTripRepresenter.add_representer(
     LocatableFloat, yaml.representer.RoundTripRepresenter.represent_float)
 
-MERGE_TAG = u'tag:yaml.org,2002:merge'
-MAP_TAG = u'tag:yaml.org,2002:map'
+
+def construct_yaml_map(self, node):
+    data = OrderedDict()
+    yield data
+    value = self.construct_mapping(node)
+    data.update(value)
+
+
+yaml.constructor.SafeConstructor.add_constructor(MAP_TAG, construct_yaml_map)
 
 
 class YamlLocator(Locator):
@@ -58,16 +70,6 @@ class YamlLocator(Locator):
             # List
             self.children.append(locator)
         locator.add_children(node)
-
-
-def construct_yaml_map(self, node):
-    data = OrderedDict()
-    yield data
-    value = self.construct_mapping(node)
-    data.update(value)
-
-
-yaml.constructor.SafeConstructor.add_constructor(MAP_TAG, construct_yaml_map)
 
 
 class YamlReader(Reader):

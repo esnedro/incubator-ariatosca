@@ -17,8 +17,9 @@
 
 # Keywords
 
-TYPE_NAMES = ('artifact', 'data', 'capability', 'interface', 'relationship', 'node', 'group',
-              'policy')
+TYPE_NAMES_NO_UNSUPPORTED_FIELDS = ('artifact', 'data', 'capability', 'relationship', 'node',
+                                    'group', 'policy')
+TYPE_NAMES = TYPE_NAMES_NO_UNSUPPORTED_FIELDS + ('interface',)
 TYPE_NAME_PLURAL = {
     'artifact': 'artifacts',
     'data': 'datatypes',
@@ -32,6 +33,7 @@ TYPE_NAME_PLURAL = {
 PRIMITIVE_TYPE_NAMES = ('string', 'integer', 'float', 'boolean')
 PARAMETER_SECTION_NAMES = ('properties', 'attributes')
 TEMPLATE_NAMES = ('node', 'group', 'relationship', 'policy')
+TEMPLATE_WITH_INTERFACE_NAMES = ('node', 'group', 'relationship')
 TEMPLATE_NAME_SECTIONS = {
     'node': 'node_templates',
     'group': 'groups',
@@ -77,8 +79,9 @@ CONSTRAINTS_WITH_NON_NEGATIVE_INT = ('length', 'min_length', 'max_length')
 # Values
 
 NOT_A_DICT = ('null', 'a string', '123', '0.123', '[]')
+NOT_A_DICT_OR_STRING = ('null', '123', '0.123', '[]')
 NOT_A_LIST = ('null', 'a string', '123', '0.123', '{}')
-NOT_A_STRING = ('123', '0.123', '[]', '{}')
+NOT_A_STRING = ('null', '123', '0.123', '[]', '{}')
 NOT_A_RANGE = NOT_A_LIST + (
     '[]', '[ 1 ]', '[ 1, 2, 3 ]',
     '[ 1, 1 ]', '[ 2, 1 ]',

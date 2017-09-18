@@ -100,7 +100,18 @@ policy_types:
 """).assert_success()
 
 
-def test_policy_type_targets_unicode(parser):
+def test_policy_type_targets_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+policy_types:
+  MyType:
+    targets: [ UnknownType ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_policy_type_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -110,12 +121,3 @@ policy_types:
   類型:
     targets: [ 類型一, 類型二 ]
 """).assert_success()
-
-
-def test_policy_type_targets_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-policy_types:
-  MyType:
-    targets: [ UnknownType ]
-""").assert_failure()

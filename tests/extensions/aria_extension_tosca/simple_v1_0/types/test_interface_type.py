@@ -26,28 +26,6 @@ import pytest
 from .. import data
 
 
-# Fields
-
-def test_interface_type_fields_unicode(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-interface_types:
-  類型:
-    inputs:
-      輸入:
-        type: string
-    手術:
-      description: 描述
-      implementation:
-        primary: 履行
-        dependencies:
-          - 依賴
-      inputs:
-        輸入:
-          type: string
-""").assert_success()
-
-
 # Interface inputs
 
 def test_interface_type_inputs_add(parser):
@@ -279,3 +257,25 @@ interface_types:
         my_input:
           type: MyType1
 """).assert_failure()
+
+
+# Unicode
+
+def test_interface_type_unicode(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  類型:
+    inputs:
+      輸入:
+        type: string
+    手術:
+      description: 描述
+      implementation:
+        primary: 履行
+        dependencies:
+          - 依賴
+      inputs:
+        輸入:
+          type: string
+""").assert_success()

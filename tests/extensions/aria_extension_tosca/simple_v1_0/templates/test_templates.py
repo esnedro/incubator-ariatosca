@@ -25,18 +25,6 @@ from .. import data
 
 @pytest.mark.parametrize('name,value', itertools.product(
     data.TEMPLATE_NAMES,
-    data.NOT_A_DICT
-))
-def test_template_section_wrong_yaml_type(parser, name, value):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-topology_template:
-  {{ section }}: {{ value }}
-""", dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
-
-
-@pytest.mark.parametrize('name,value', itertools.product(
-    data.TEMPLATE_NAMES,
     data.NOT_A_STRING
 ))
 def test_template_type_wrong_yaml_type(parser, name, value):
@@ -47,6 +35,17 @@ topology_template:
     my_template:
       type: {{ value }}
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
+def test_template_unsupported_field(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}:
+    my_template:
+      unsupported: {}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
 
 
 # Common fields
@@ -62,20 +61,6 @@ topology_template:
     my_template:
       type: MyType
       description: a description
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
-
-
-@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_fields_unicode(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-    類型: {}
-topology_template:
-  {{ section }}:
-    模板:
-      type: 類型
-      description: 描述
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
@@ -99,3 +84,19 @@ topology_template:
     my_template:
       type: null
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
+def test_template_unicode(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+    類型: {}
+topology_template:
+  {{ section }}:
+    模板:
+      type: 類型
+      description: 描述
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()

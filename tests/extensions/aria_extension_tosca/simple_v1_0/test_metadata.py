@@ -21,6 +21,8 @@ import pytest
 from . import data
 
 
+NORMATIVE_FIELD_NAMES = ('template_name', 'template_author', 'template_version')
+
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
@@ -31,8 +33,17 @@ metadata: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
+def test_metadata_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+metadata: {}
+""").assert_success()
+
+
+# Fields
+
 @pytest.mark.parametrize('field,value', itertools.product(
-    ('template_name', 'template_author', 'template_version'),
+    NORMATIVE_FIELD_NAMES,
     data.NOT_A_STRING
 ))
 def test_metadata_normative_fields_wrong_yaml_type(parser, field, value):
@@ -52,15 +63,6 @@ metadata:
 """, dict(value=value)).assert_failure()
 
 
-def test_metadata_empty(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-metadata: {}
-""").assert_success()
-
-
-# Normative fields
-
 @pytest.mark.parametrize('value', data.GOOD_VERSIONS)
 def test_metadata_normative_template_version(parser, value):
     parser.parse_literal("""
@@ -79,35 +81,9 @@ metadata:
 """, dict(value=value)).assert_failure()
 
 
-# Non-normative fields
+# Unicode
 
-def test_metadata_with_non_normative_fields(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-metadata:
-  template_name: name
-  template_author: author
-  template_version: 1.0.0.alpha-10
-  non_normative1: non_normative1
-  non_normative2: non_normative2
-  non_normative3: non_normative3
-""").assert_success()
-
-
-def test_metadata_with_non_normative_fields_nulls(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-metadata:
-  template_name: null
-  template_author: null
-  template_version: null
-  non_normative1: null
-  non_normative2: null
-  non_normative3: null
-""").assert_success()
-
-
-def test_metadata_with_non_normative_fields_unicode(parser):
+def test_metadata_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata:

@@ -21,7 +21,64 @@ import pytest
 from .. import data
 
 
-# Required properties
+# Syntax
+
+@pytest.mark.parametrize(
+    'name,parameter_section,value',
+    ((s[0], s[1], v)
+     for s, v in itertools.product(
+         data.TEMPLATE_PARAMETER_SECTIONS,
+         data.NOT_A_DICT))
+)
+def test_template_parameters_wrong_yaml_type(parser, name, parameter_section, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType: {}
+topology_template:
+  {{ section }}:
+    my_template:
+      type: MyType
+      {{ parameter_section }}: {{ value }}
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+          parameter_section=parameter_section, value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
+def test_template_parameters_empty(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType: {}
+topology_template:
+  {{ section }}:
+    my_template:
+      type: MyType
+      {{ parameter_section }}: {}
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+          parameter_section=parameter_section)).assert_success()
+
+
+# Type conformance
+
+@pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
+def test_template_parameter_missing(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}:
+      my_parameter1:
+        type: string
+topology_template:
+  {{ section }}:
+    my_template:
+      type: MyType
+      {{ parameter_section }}:
+        my_parameter2: a value
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+          parameter_section=parameter_section)).assert_failure()
+
 
 @pytest.mark.parametrize('name,type_name', itertools.product(
     data.TEMPLATE_NAMES,
@@ -343,3 +400,24 @@ topology_template:
           - {}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
           parameter_section=parameter_section)).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
+def test_template_parameter_unicode(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  類型:
+    {{ parameter_section }}:
+      參數:
+        type: string
+topology_template:
+  {{ section }}:
+    模板:
+      type: 類型
+      {{ parameter_section }}:
+        參數: 值
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+          parameter_section=parameter_section)).assert_success()

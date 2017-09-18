@@ -60,6 +60,13 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 imports: {{ value }}
 """, dict(value=value)).assert_failure()
 
+def test_imports_unsupported_field(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  unsupported: {}
+""").assert_failure()
+
 
 def test_imports_empty(parser):
     parser.parse_literal("""
@@ -70,7 +77,7 @@ imports: []
 
 # Variants
 
-def test_import_single_short_form(parser, repository):
+def test_imports_short_form(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -82,19 +89,7 @@ topology_template:
 """, dict(repository=repository)).assert_success()
 
 
-def test_import_single_short_form_unicode(parser, repository):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-imports:
-  - {{ repository }}/imports/節點類型.yaml
-topology_template:
-  node_templates:
-    my_node:
-      type: 類型
-""", dict(repository=repository)).assert_success()
-
-
-def test_import_single_long_form(parser, repository):
+def test_imports_long_form(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -107,7 +102,7 @@ topology_template:
 
 
 @pytest.mark.skip(reason='not yet supported')
-def test_import_single_repository(parser, repository):
+def test_imports_repository(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 repositories:
@@ -124,7 +119,7 @@ topology_template:
 
 
 @pytest.mark.skip(reason='not yet supported')
-def test_import_single_namespace(parser, repository):
+def test_imports_namespace(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -140,7 +135,7 @@ topology_template:
 
 # Bad imports
 
-def test_import_not_found(parser):
+def test_imports_not_found(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -148,7 +143,7 @@ imports:
 """).assert_failure()
 
 
-def test_import_bad(parser, repository):
+def test_imports_bad(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -158,3 +153,17 @@ topology_template:
     my_node:
       type: MyNode
 """, dict(repository=repository)).assert_failure()
+
+
+# Unicode
+
+def test_imports_unicode(parser, repository):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  - {{ repository }}/imports/節點類型.yaml
+topology_template:
+  node_templates:
+    my_node:
+      type: 類型
+""", dict(repository=repository)).assert_success()

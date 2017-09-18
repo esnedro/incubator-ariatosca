@@ -62,7 +62,18 @@ capability_types:
 """).assert_success()
 
 
-def test_capability_type_valid_source_types_unicode(parser):
+def test_capability_type_valid_source_types_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType:
+    valid_source_types: [ UnknownType ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_capability_type_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -72,12 +83,3 @@ capability_types:
   類型:
     valid_source_types: [ 類型一, 類型二 ]
 """).assert_success()
-
-
-def test_capability_type_valid_source_types_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType:
-    valid_source_types: [ UnknownType ]
-""").assert_failure()

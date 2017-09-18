@@ -62,7 +62,18 @@ group_types:
 """).assert_success()
 
 
-def test_group_type_members_unicode(parser):
+def test_group_type_members_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+group_types:
+  MyType:
+    members: [ UnknownType ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_group_type_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -72,12 +83,3 @@ group_types:
   類型:
     members: [ 類型一, 類型二 ]
 """).assert_success()
-
-
-def test_group_type_members_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-group_types:
-  MyType:
-    members: [ UnknownType ]
-""").assert_failure()

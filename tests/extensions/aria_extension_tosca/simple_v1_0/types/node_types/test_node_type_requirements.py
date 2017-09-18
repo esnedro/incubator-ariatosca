@@ -61,25 +61,6 @@ node_types:
 """).assert_success()
 
 
-def test_node_type_requirement_fields_unicode(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  類型: {}
-relationship_types:
-  類型: {}
-node_types:
-  類型:
-    requirements:
-      - 需求:
-          capability: 類型
-          node: 類型
-          relationship:
-            type: 類型
-          occurrences: [ 0, UNBOUNDED ]
-""").assert_success()
-
-
 # Capability
 
 def test_node_type_requirement_capability_short_form(parser):
@@ -259,3 +240,24 @@ node_types:
           type: MyType
           occurrences: {{ value }}
 """, dict(value=value)).assert_failure()
+
+
+# Unicode
+
+def test_node_type_requirement_unicode(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  類型: {}
+relationship_types:
+  類型: {}
+node_types:
+  類型:
+    requirements:
+      - 需求:
+          capability: 類型
+          node: 類型
+          relationship:
+            type: 類型
+          occurrences: [ 0, UNBOUNDED ]
+""").assert_success()

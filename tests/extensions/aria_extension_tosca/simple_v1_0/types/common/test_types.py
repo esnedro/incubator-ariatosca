@@ -35,6 +35,16 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name, value=value)).assert_failure()
 
 
+@pytest.mark.parametrize('name', data.TYPE_NAMES_NO_UNSUPPORTED_FIELDS)
+def test_type_unsupported_field(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    unsupported: {}
+""", dict(name=name)).assert_failure()
+
+
 @pytest.mark.parametrize('name', data.TYPE_NAMES)
 def test_type_empty(parser, name):
     parser.parse_literal("""
@@ -129,19 +139,6 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name)).assert_success()
 
 
-@pytest.mark.parametrize('name', data.TYPE_NAMES)
-def test_type_fields_unicode(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-  類型一: {}
-  類型二:
-    derived_from: 類型一
-    version: 1.0.0.詠嘆調-10
-    description: 描述
-""", dict(name=name)).assert_success()
-
-
 @pytest.mark.parametrize('name,value', itertools.product(
     data.TYPE_NAMES,
     data.BAD_VERSIONS
@@ -153,3 +150,18 @@ tosca_definitions_version: tosca_simple_yaml_1_0
   MyType:
     version: {{ value }}
 """, dict(name=name, value=value)).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('name', data.TYPE_NAMES)
+def test_type_unicode(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  類型一: {}
+  類型二:
+    derived_from: 類型一
+    version: 1.0.0.詠嘆調-10
+    description: 描述
+""", dict(name=name)).assert_success()

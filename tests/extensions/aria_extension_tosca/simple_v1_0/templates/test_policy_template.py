@@ -238,7 +238,22 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_unicode(parser):
+def test_policy_template_targets_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+policy_types:
+  MyType: {}
+topology_template:
+  policies:
+    my_policy:
+      type: MyType
+      targets: [ unknown ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_policy_template_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -255,16 +270,3 @@ topology_template:
       type: 類型
       targets: [ 節點 ]
 """).assert_success()
-
-
-def test_policy_template_targets_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-policy_types:
-  MyType: {}
-topology_template:
-  policies:
-    my_policy:
-      type: MyType
-      targets: [ unknown ]
-""").assert_failure()

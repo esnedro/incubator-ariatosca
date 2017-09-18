@@ -56,7 +56,7 @@ def validate_primitive(value, cls, coerce=False):
     :raises ValueError: if not a primitive type or if coercion failed.
     """
 
-    if (cls is not None) and (value is not None) and (value is not NULL):
+    if (cls is not None) and (value is not None):
         if (cls is unicode) or (cls is str): # These two types are interchangeable
             valid = isinstance(value, basestring)
         elif cls is int:
@@ -66,6 +66,8 @@ def validate_primitive(value, cls, coerce=False):
             valid = isinstance(value, cls)
         if not valid:
             if coerce:
+                if value is NULL:
+                    value = None
                 value = cls(value)
             else:
                 raise ValueError(u'not a "{0}": {1}'.format(full_type_name(cls), safe_repr(value)))

@@ -49,6 +49,20 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
+def test_node_type_relationship_interface_unsupported_field(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          unsupported: {}
+""").assert_failure()
+
+
 def test_node_type_relationship_interface_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -90,30 +104,6 @@ node_types:
                 inputs: {}
                 my_operation1: {}
                 my_operation2: {}
-""").assert_success()
-
-
-def test_node_type_relationship_interface_fields_unicode(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  類型: {}
-relationship_types:
-  類型: {}
-interface_types:
-  類型: {}
-node_types:
-  類型:
-    requirements:
-      - 需求:
-          capability: 類型
-          relationship:
-            type: 類型
-            interfaces:
-              接口:
-                type: 類型
-                手術:
-                  implementation: 履行
 """).assert_success()
 
 
@@ -650,3 +640,29 @@ node_types:
                     my_input:
                       type: MyType1
 """).assert_failure()
+
+
+# Unicode
+
+def test_node_type_relationship_interface_unicode(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  類型: {}
+relationship_types:
+  類型: {}
+interface_types:
+  類型: {}
+node_types:
+  類型:
+    requirements:
+      - 需求:
+          capability: 類型
+          relationship:
+            type: 類型
+            interfaces:
+              接口:
+                type: 類型
+                手術:
+                  implementation: 履行
+""").assert_success()

@@ -62,7 +62,18 @@ relationship_types:
 """).assert_success()
 
 
-def test_relationship_type_valid_target_types_unicode(parser):
+def test_relationship_type_valid_target_types_unknown(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+relationship_types:
+  MyType:
+    valid_target_types: [ UnknownType ]
+""").assert_failure()
+
+
+# Unicode
+
+def test_relationship_type_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -72,12 +83,3 @@ relationship_types:
   類型:
     valid_target_types: [ 類型一, 類型二 ]
 """).assert_success()
-
-
-def test_relationship_type_valid_target_types_unknown(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-relationship_types:
-  MyType:
-    valid_target_types: [ UnknownType ]
-""").assert_failure()

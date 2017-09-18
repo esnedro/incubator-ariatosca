@@ -48,6 +48,7 @@ class Read(Consumer):
         imported_presentations = None
 
         if self.context.presentation.threads == 1:
+            # BlockingExecutor is much faster for the single-threaded case
             executor = BlockingExecutor(print_exceptions=self.context.presentation.print_exceptions)
         else:
             executor = FixedThreadPoolExecutor(size=self.context.presentation.threads,

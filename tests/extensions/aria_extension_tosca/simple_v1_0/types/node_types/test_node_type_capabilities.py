@@ -26,8 +26,6 @@ from ... import data
 def test_node_type_capability_wrong_yaml_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
 node_types:
   MyType:
     capabilities:
@@ -35,11 +33,23 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_capability_empty(parser):
+def test_node_type_capability_unsupported_field(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
   MyType: {}
+node_types:
+  MyType:
+    capabilities:
+      my_capability:
+        type: MyType
+        unsupported: {}
+""").assert_failure()
+
+
+def test_node_type_capability_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
   MyType:
     capabilities:
@@ -147,26 +157,6 @@ node_types:
             type: string
             description: a description
             default: a value
-            status: supported
-""", dict(parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_fields_unicode(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  類型: {}
-node_types:
-  類型:
-    capabilities:
-      能力:
-        type: 類型
-        {{ parameter_section }}:
-          參數:
-            type: string
-            description: 描述
-            default: 值
             status: supported
 """, dict(parameter_section=parameter_section)).assert_success()
 
@@ -392,3 +382,25 @@ node_types:
         type: MyType
         occurrences: {{ value }}
 """, dict(value=value)).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
+def test_node_type_capability_unicode(parser, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  類型: {}
+node_types:
+  類型:
+    capabilities:
+      能力:
+        type: 類型
+        {{ parameter_section }}:
+          參數:
+            type: string
+            description: 描述
+            default: 值
+            status: supported
+""", dict(parameter_section=parameter_section)).assert_success()

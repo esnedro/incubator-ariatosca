@@ -21,6 +21,70 @@ import pytest
 from ... import data
 
 
+# Syntax
+
+@pytest.mark.parametrize(
+    'name,parameter_section,value',
+    ((s[0], s[1], v)
+     for s, v in itertools.product(data.PARAMETER_SECTIONS, data.NOT_A_DICT))
+)
+def test_type_parameter_section_wrong_yaml_type(parser, name, parameter_section, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}: {{ value }}
+""", dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
+def test_type_parameter_section_empty(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}: {}
+""", dict(name=name, parameter_section=parameter_section)).assert_success()
+
+
+@pytest.mark.parametrize(
+    'name,parameter_section,value',
+    ((s[0], s[1], v)
+     for s, v in itertools.product(data.PARAMETER_SECTIONS, data.NOT_A_DICT))
+)
+def test_type_parameter_wrong_yaml_type(parser, name, parameter_section, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}:
+      my_parameter: {{ value }}
+""", dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
+def test_type_parameter_empty(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}:
+      my_parameter: {} # type is required
+""", dict(name=name, parameter_section=parameter_section)).assert_failure()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
+def test_type_parameter_unsupported_field(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}:
+      my_parameter:
+        unsupported_field: {}
+""", dict(name=name, parameter_section=parameter_section)).assert_failure()
+
+
 # Fields
 
 @pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
@@ -34,21 +98,6 @@ tosca_definitions_version: tosca_simple_yaml_1_0
         type: string
         description: a description
         default: a value
-        status: supported
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
-def test_type_parameter_fields_unicode(parser, name, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-  MyType:
-    {{ parameter_section }}:
-      參數:
-        type: string
-        description: 描述
-        default: 值
         status: supported
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
@@ -279,20 +328,6 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 
 @pytest.mark.parametrize('name,parameter_section', data.PARAMETER_WITH_CONSTRAINTS_SECTIONS)
-def test_type_parameter_constraints_pattern_unicode(parser, name, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-  類型:
-    {{ parameter_section }}:
-      參數:
-        type: string
-        constraints:
-          - pattern: ^模式$
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_WITH_CONSTRAINTS_SECTIONS)
 def test_type_parameter_constraints_pattern_bad(parser, name, parameter_section):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -427,3 +462,34 @@ data_types:
       my_parameter:
         type: MyDataType1
 """, dict(name=name, parameter_section=parameter_section)).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_SECTIONS)
+def test_type_parameter_unicode(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    {{ parameter_section }}:
+      參數:
+        type: string
+        description: 描述
+        default: 值
+        status: supported
+""", dict(name=name, parameter_section=parameter_section)).assert_success()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.PARAMETER_WITH_CONSTRAINTS_SECTIONS)
+def test_type_parameter_constraints_pattern_unicode(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  類型:
+    {{ parameter_section }}:
+      參數:
+        type: string
+        constraints:
+          - pattern: ^模式$
+""", dict(name=name, parameter_section=parameter_section)).assert_success()

@@ -77,22 +77,6 @@ interface_types:
 """, dict(name=name)).assert_success()
 
 
-@pytest.mark.parametrize('name', TYPE_NAMES)
-def test_type_interface_fields_unicode(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-interface_types:
-  類型: {}
-{{ name }}_types:
-  類型:
-    interfaces:
-      接口:
-        type: 類型
-        手術:
-          implementation: 履行
-""", dict(name=name)).assert_success()
-
-
 # Type
 
 @pytest.mark.parametrize('name', TYPE_NAMES)
@@ -436,3 +420,21 @@ interface_types:
             my_input:
               type: MyType1
 """, dict(name=name)).assert_failure()
+
+
+# Unicode
+
+@pytest.mark.parametrize('name', TYPE_NAMES)
+def test_type_interface_unicode(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  類型: {}
+{{ name }}_types:
+  類型:
+    interfaces:
+      接口:
+        type: 類型
+        手術:
+          implementation: 履行
+""", dict(name=name)).assert_success()

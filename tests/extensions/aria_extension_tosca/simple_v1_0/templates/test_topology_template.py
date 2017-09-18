@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import itertools
+
 import pytest
 
 from .. import data
@@ -29,11 +31,40 @@ topology_template: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
+def test_topology_template_unsupported_field(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+    unsupported: {}
+""").assert_failure()
+
+
 def test_topology_template_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template: {}
 """).assert_success()
+
+
+@pytest.mark.parametrize('name,value', itertools.product(
+    data.TEMPLATE_NAMES,
+    data.NOT_A_DICT
+))
+def test_topology_template_template_section_wrong_yaml_type(parser, name, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}: {{ value }}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
+def test_topology_template_template_section_empty(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}: {}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
 def test_topology_template_fields(parser):
@@ -48,7 +79,9 @@ topology_template:
 """).assert_success()
 
 
-def test_topology_template_fields_unicode(parser):
+# Unicode
+
+def test_topology_template_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
