@@ -14,25 +14,15 @@
 # SSH tests fail in the container. See:
 # https://docs.travis-ci.com/user/reference/overview/#Virtualization-environments
 
-dist: trusty
-sudo: true
+sudo: false
 
 language: python
-
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:fkrull/deadsnakes'
-    packages:
-      # Ubuntu 14.04 (trusty) does not come with Python 2.6, so we will install it from Felix
-      # Krull's PPA
-      - python2.6
-      - python2.6-dev
 
 python:
   # We handle Python 2.6 testing from within tox (see tox.ini); note that this means that we run
   # tox itself always from Python 2.7
   - '2.7'
+  - '2.6'
 
 env:
   # The PYTEST_PROCESSES environment var is used in tox.ini to override the --numprocesses argument
@@ -48,6 +38,27 @@ env:
   - PYTEST_PROCESSES=1 TOX_ENV=py27ssh
   - PYTEST_PROCESSES=1 TOX_ENV=py26ssh
   - PYTEST_PROCESSES=1 TOX_ENV=docs
+
+matrix:
+  exclude:
+  - python: '2.6'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py27
+  - python: '2.6'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py27e2e
+  - python: '2.6'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py27ssh
+  - python: '2.6'
+    env: PYTEST_PROCESSES=1 TOX_ENV=pylint_code
+  - python: '2.6'
+    env: PYTEST_PROCESSES=1 TOX_ENV=pylint_tests
+
+  - python: '2.7'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py26
+  - python: '2.7'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py26e2e
+  - python: '2.7'
+    env: PYTEST_PROCESSES=1 TOX_ENV=py26ssh
+
 
 before_install:
   # Create SSH keys for SSH tests
