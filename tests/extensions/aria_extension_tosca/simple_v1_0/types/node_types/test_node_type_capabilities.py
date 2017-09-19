@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
@@ -57,7 +55,24 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_capability_fields(parser):
+# Description
+
+@pytest.mark.parametrize('value', data.NOT_A_STRING)
+def test_node_type_capability_description_wrong_yaml_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    capabilities:
+      my_capability:
+        type: MyType
+        description: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_capability_description(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -68,14 +83,22 @@ node_types:
       my_capability:
         type: MyType
         description: a description
-        properties: {}
-        attributes: {}
-        valid_source_types: []
-        occurrences: [ 0, UNBOUNDED ]
 """).assert_success()
 
 
 # Type
+
+@pytest.mark.parametrize('value', data.NOT_A_STRING)
+def test_node_type_capability_type_wrong_yaml_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    capabilities:
+      my_capability:
+        type: {{ value }}
+""", dict(value=value)).assert_failure()
+
 
 def test_node_type_capability_type_unknown(parser):
     parser.parse_literal("""
@@ -85,17 +108,6 @@ node_types:
     capabilities:
       my_capability:
         type: UnknownType
-""").assert_failure()
-
-
-def test_node_type_capability_type_null(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: null
 """).assert_failure()
 
 
@@ -137,157 +149,6 @@ node_types:
       my_capability:
         type: MyType1
 """).assert_failure()
-
-
-# Parameters
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_fields(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: string
-            description: a description
-            default: a value
-            status: supported
-""", dict(parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('parameter_section,value', itertools.product(
-    data.PARAMETER_SECTION_NAMES,
-    data.STATUSES
-))
-def test_node_type_capability_parameter_status(parser, parameter_section, value):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: string
-            status: {{ value }}
-""", dict(parameter_section=parameter_section, value=value)).assert_success()
-
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_status_bad(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: string
-            status: not a status
-""", dict(parameter_section=parameter_section)).assert_failure()
-
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_add(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType:
-    {{ parameter_section }}:
-      my_parameter1:
-        type: string
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter2:
-            type: string
-""", dict(parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_add_default(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: string
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: string
-            default: my value
-""", dict(parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_type_override(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-data_types:
-  MyType1: {}
-  MyType2:
-    derived_from: MyType1
-capability_types:
-  MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: MyType1
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: MyType2
-""", dict(parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.skip(reason='fix')
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_parameter_type_override_bad(parser, parameter_section):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-data_types:
-  MyType1: {}
-  MyType2:
-    derived_from: MyType1
-capability_types:
-  MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: MyType2
-node_types:
-  MyType:
-    capabilities:
-      my_capability:
-        type: MyType
-        {{ parameter_section }}:
-          my_parameter:
-            type: MyType1
-""", dict(parameter_section=parameter_section)).assert_failure()
 
 
 # Valid source types
@@ -351,8 +212,6 @@ node_types:
 """).assert_success()
 
 
-
-
 def test_node_type_capability_valid_source_types_unknown(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -369,8 +228,23 @@ node_types:
 
 # Occurrences
 
-@pytest.mark.parametrize('value', data.NOT_OCCURRENCES)
+@pytest.mark.parametrize('value', data.OCCURRENCES)
 def test_node_type_capability_occurrences(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    capabilities:
+      my_capability:
+        type: MyType
+        occurrences: {{ value }}
+""", dict(value=value)).assert_success()
+
+
+@pytest.mark.parametrize('value', data.BAD_OCCURRENCES)
+def test_node_type_capability_occurrences_bad(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:

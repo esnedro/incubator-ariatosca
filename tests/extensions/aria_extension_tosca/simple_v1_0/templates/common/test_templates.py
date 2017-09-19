@@ -18,10 +18,39 @@ import itertools
 
 import pytest
 
-from .. import data
+from ... import data
 
 
 # Syntax
+
+@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
+def test_template_unsupported_field(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}:
+    my_template:
+      unsupported: {}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
+
+
+# Description
+
+@pytest.mark.parametrize('name,value', itertools.product(
+    data.TEMPLATE_NAMES,
+    data.NOT_A_STRING
+))
+def test_template_description_wrong_yaml_type(parser, name, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}:
+    my_template:
+      description: {{ value }}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
+
+
+# Type
 
 @pytest.mark.parametrize('name,value', itertools.product(
     data.TEMPLATE_NAMES,
@@ -36,53 +65,14 @@ topology_template:
       type: {{ value }}
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
-
 @pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_unsupported_field(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-topology_template:
-  {{ section }}:
-    my_template:
-      unsupported: {}
-""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
-
-
-# Common fields
-
-@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_fields(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-    MyType: {}
-topology_template:
-  {{ section }}:
-    my_template:
-      type: MyType
-      description: a description
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
-
-
-@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_of_unknown_type(parser, name):
+def test_template_type_unknown(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:
   {{ section }}:
     my_template:
       type: UnknownType
-""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
-
-
-@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_of_null_type(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-topology_template:
-  {{ section }}:
-    my_template:
-      type: null
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
 
 

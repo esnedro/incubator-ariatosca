@@ -18,7 +18,7 @@ import itertools
 
 import pytest
 
-from .. import data
+from ... import data
 
 
 # Syntax
@@ -30,7 +30,7 @@ from .. import data
          data.TEMPLATE_PARAMETER_SECTIONS,
          data.NOT_A_DICT))
 )
-def test_template_parameters_wrong_yaml_type(parser, name, parameter_section, value):
+def test_template_parameter_section_wrong_yaml_type(parser, name, parameter_section, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -45,7 +45,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
-def test_template_parameters_empty(parser, name, parameter_section):
+def test_template_parameter_section_empty(parser, name, parameter_section):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -57,6 +57,23 @@ topology_template:
       {{ parameter_section }}: {}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
           parameter_section=parameter_section)).assert_success()
+
+
+@pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
+def test_template_parameter_unsupported_field(parser, name, parameter_section):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType: {}
+topology_template:
+  {{ section }}:
+    my_template:
+      type: MyType
+      {{ parameter_section }}:
+        my_parameter:
+          unsupported
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+          parameter_section=parameter_section)).assert_failure()
 
 
 # Type conformance

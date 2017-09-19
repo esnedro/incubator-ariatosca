@@ -48,29 +48,6 @@ TEMPLATE_PARAMETER_SECTIONS = (
     ('relationship', 'attributes'),
     ('policy', 'properties')
 )
-PARAMETER_SECTIONS = (
-    ('artifact', 'properties'),
-    ('data', 'properties'),
-    ('capability', 'properties'),
-    ('capability', 'attributes'),
-    ('interface', 'inputs'),
-    ('relationship', 'properties'),
-    ('relationship', 'attributes'),
-    ('node', 'properties'),
-    ('node', 'attributes'),
-    ('group', 'properties'),
-    ('policy', 'properties')
-)
-PARAMETER_WITH_CONSTRAINTS_SECTIONS = (
-    ('artifact', 'properties'),
-    ('data', 'properties'),
-    ('capability', 'properties'),
-    ('interface', 'inputs'),
-    ('relationship', 'properties'),
-    ('node', 'properties'),
-    ('group', 'properties'),
-    ('policy', 'properties')
-)
 CONSTRAINTS_WITH_VALUE = ('equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal')
 CONSTRAINTS_WITH_VALUE_LIST = ('valid_values',)
 CONSTRAINTS_WITH_VALUE_RANGE = ('in_range',)
@@ -78,17 +55,19 @@ CONSTRAINTS_WITH_NON_NEGATIVE_INT = ('length', 'min_length', 'max_length')
 
 # Values
 
-NOT_A_DICT = ('null', 'a string', '123', '0.123', '[]')
-NOT_A_DICT_OR_STRING = ('null', '123', '0.123', '[]')
-NOT_A_LIST = ('null', 'a string', '123', '0.123', '{}')
-NOT_A_STRING = ('null', '123', '0.123', '[]', '{}')
+NOT_A_DICT = ('null', 'true', 'a string', '123', '0.123', '[]')
+NOT_A_DICT_OR_STRING = ('null', 'true', '123', '0.123', '[]')
+NOT_A_LIST = ('null', 'true', 'a string', '123', '0.123', '{}')
+NOT_A_STRING = ('null', 'true', '123', '0.123', '[]', '{}')
+NOT_A_BOOL = ('null', '123', '0.123', '[]', '{}')
 NOT_A_RANGE = NOT_A_LIST + (
     '[]', '[ 1 ]', '[ 1, 2, 3 ]',
     '[ 1, 1 ]', '[ 2, 1 ]',
     '[ 1, a string ]', '[ a string, 1 ]',
     '[ 1.5, 2 ]', '[ 1, 2.5 ]'
 )
-NOT_OCCURRENCES = NOT_A_RANGE + ('[ -1, 1 ]',)
+OCCURRENCES = ('[ 0, 1 ]', '[ 10, UNBOUNDED ]')
+BAD_OCCURRENCES = NOT_A_RANGE + ('[ -1, 1 ]', '[ 0, unbounded ]')
 GOOD_VERSIONS = ("'6.1'", '2.0.1', '3.1.0.beta', "'1.0.0.alpha-10'")
 BAD_VERSIONS = ('a_string', '1.2.3.4.5', '1.2.beta', '1.0.0.alpha-x')
 STATUSES = ('supported', 'unsupported', 'experimental', 'deprecated')

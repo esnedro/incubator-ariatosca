@@ -32,6 +32,20 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
+def test_node_type_requirement_unsupported_field(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          unsupported: {}
+""").assert_failure()
+
+
 def test_node_type_requirement_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -42,26 +56,33 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_requirement_fields(parser):
+# Capability
+
+@pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
+def test_node_type_requirement_capability_wrong_yaml_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_requirement_capability_unsupported_field(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
-  MyType: {}
-relationship_types:
   MyType: {}
 node_types:
   MyType:
     requirements:
       - my_requirement:
-          capability: MyType
-          node: MyType
-          relationship:
-            type: MyType
-          occurrences: [ 0, UNBOUNDED ]
-""").assert_success()
+          capability:
+            unsupported: {}
+""").assert_failure()
 
-
-# Capability
 
 def test_node_type_requirement_capability_short_form(parser):
     parser.parse_literal("""
@@ -75,7 +96,7 @@ node_types:
 """).assert_success()
 
 
-def test_node_type_requirement_capability_unknown(parser):
+def test_node_type_requirement_capability_type_unknown(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -86,18 +107,7 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_requirement_capability_null(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType:
-    requirements:
-      - my_requirement:
-          capability: null
-""").assert_failure()
-
-
-def test_node_type_requirement_capability_override(parser):
+def test_node_type_requirement_capability_type_override(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -118,6 +128,21 @@ node_types:
 
 # Node
 
+@pytest.mark.parametrize('value', data.NOT_A_STRING)
+def test_node_type_requirement_node_wrong_yaml_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          node: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
 def test_node_type_requirement_node_unknown(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -129,20 +154,6 @@ node_types:
       - my_requirement:
           capability: MyType
           node: UnknownType
-""").assert_failure()
-
-
-def test_node_type_requirement_node_null(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    requirements:
-      - my_requirement:
-          capability: MyType
-          node: null
 """).assert_failure()
 
 
@@ -170,6 +181,52 @@ node_types:
 
 # Relationship
 
+@pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
+def test_node_type_requirement_relationship_type_wrong_yaml_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_requirement_relationship_unsupported_field(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            unsupported: {}
+""").assert_failure()
+
+
+def test_node_type_requirement_relationship_short_form(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship: MyType
+""").assert_success()
+
+
 def test_node_type_requirement_relationship_type_unknown(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -182,21 +239,6 @@ node_types:
           capability: MyType
           relationship:
             type: UnknownType
-""").assert_failure()
-
-
-def test_node_type_requirement_relationship_type_null(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    requirements:
-      - my_requirement:
-          capability: MyType
-          relationship:
-            type: null
 """).assert_failure()
 
 
@@ -227,7 +269,7 @@ node_types:
 
 # Occurrences
 
-@pytest.mark.parametrize('value', data.NOT_OCCURRENCES)
+@pytest.mark.parametrize('value', data.OCCURRENCES)
 def test_node_type_requirement_occurrences(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -237,7 +279,22 @@ node_types:
   MyType:
     requirements:
       - my_requirement:
-          type: MyType
+          capability: MyType
+          occurrences: {{ value }}
+""", dict(value=value)).assert_success()
+
+
+@pytest.mark.parametrize('value', data.BAD_OCCURRENCES)
+def test_node_type_requirement_occurrences_bad(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
           occurrences: {{ value }}
 """, dict(value=value)).assert_failure()
 

@@ -54,6 +54,33 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name)).assert_success()
 
 
+# Description
+
+@pytest.mark.parametrize('name,value', itertools.product(
+    data.TYPE_NAMES,
+    data.NOT_A_STRING
+))
+def test_type_description_wrong_yaml_type(parser, name, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    description: {{ value }}
+""", dict(name=name, value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name', data.TYPE_NAMES)
+def test_type_description(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType:
+    description: a description
+""", dict(name=name)).assert_success()
+
+
+# Derived from
+
 @pytest.mark.parametrize('name,value', itertools.product(
     data.TYPE_NAMES,
     data.NOT_A_STRING
@@ -67,7 +94,16 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name, value=value)).assert_failure()
 
 
-# Derived from
+@pytest.mark.parametrize('name', data.TYPE_NAMES)
+def test_type_derived_from(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{ name }}_types:
+  MyType1: {}
+  MyType2:
+    derived_from: MyType1
+""", dict(name=name)).assert_success()
+
 
 @pytest.mark.parametrize('name', data.TYPE_NAMES)
 def test_type_derived_from_unknown(parser, name):
@@ -76,16 +112,6 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
   MyType:
     derived_from: UnknownType
-""", dict(name=name)).assert_failure()
-
-
-@pytest.mark.parametrize('name', data.TYPE_NAMES)
-def test_type_derived_from_null(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-  MyType:
-    derived_from: null
 """, dict(name=name)).assert_failure()
 
 
@@ -113,37 +139,26 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name)).assert_failure()
 
 
-@pytest.mark.parametrize('name', data.TYPE_NAMES)
-def test_type_derived_from_root(parser, name):
+# Version
+
+@pytest.mark.parametrize('name,value', itertools.product(
+    data.TYPE_NAMES,
+    data.GOOD_VERSIONS
+))
+def test_type_version(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
-  MyType1: {}
-  MyType2:
-    derived_from: MyType1
-""", dict(name=name)).assert_success()
-
-
-# Common fields
-
-@pytest.mark.parametrize('name', data.TYPE_NAMES)
-def test_type_fields(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{ name }}_types:
-  MyType1: {}
-  MyType2:
-    derived_from: MyType1
-    version: 1.0.0
-    description: a description
-""", dict(name=name)).assert_success()
+  MyType:
+    version: {{ value }}
+""", dict(name=name, value=value)).assert_success()
 
 
 @pytest.mark.parametrize('name,value', itertools.product(
     data.TYPE_NAMES,
     data.BAD_VERSIONS
 ))
-def test_type_bad_version(parser, name, value):
+def test_type_version_bad(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:

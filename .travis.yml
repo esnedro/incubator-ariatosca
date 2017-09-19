@@ -18,7 +18,7 @@ sudo: true
 
 language: python
 
-# We need this only for "sudo: false"
+# We need this only if "sudo: false"
 #addons:
 #  apt:
 #    sources:
@@ -55,9 +55,9 @@ env:
 
 before_install:
   # Ubuntu 14.04 (trusty) does not come with Python 2.6, so we will install it from Felix Krull's
-  # PPA
+  # PPA (won't work if "sudo: false")
   - if [[ $TOX_ENV = py26* ]]; then
-      sudo add-apt-repository ppa:fkrull/deadsnakes -y;
+      sudo add-apt-repository --yes ppa:fkrull/deadsnakes;
       sudo apt-get --quiet update;
       sudo apt-get --yes install python2.6 python2.6-dev;
     fi
