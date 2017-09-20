@@ -14,11 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
 
 
 MAIN_MACROS = """
@@ -182,12 +181,12 @@ PROPERTY_SECTIONS = (
 
 # Syntax
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PARAMETER_SECTIONS, data.NOT_A_DICT))
-)
-def test_type_parameter_section_wrong_yaml_type(parser, macros, name, parameter_section, value):
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.NOT_A_DICT,
+    counts=(3, 1)
+))
+def test_type_parameter_section_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -200,7 +199,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
-def test_type_parameter_section_empty(parser, macros, name, parameter_section):
+def test_type_parameter_section_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -212,12 +211,12 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PARAMETER_SECTIONS, data.NOT_A_DICT))
-)
-def test_type_parameter_wrong_yaml_type(parser, macros, name, parameter_section, value):
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.NOT_A_DICT,
+    counts=(3, 1)
+))
+def test_type_parameter_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -230,7 +229,7 @@ my_parameter: {{ value }}
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
-def test_type_parameter_empty(parser, macros, name, parameter_section):
+def test_type_parameter_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -243,7 +242,7 @@ my_parameter: {} # type is required
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
-def test_type_parameter_unsupported_field(parser, macros, name, parameter_section):
+def test_type_parameter_syntax_unsupported(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -259,12 +258,12 @@ my_parameter:
 
 # Description
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PARAMETER_SECTIONS, data.NOT_A_STRING))
-)
-def test_type_parameter_description_wrong_yaml_type(parser, macros, name, parameter_section, value):
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.NOT_A_STRING,
+    counts=(3, 1)
+))
+def test_type_parameter_description_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -327,12 +326,12 @@ my_parameter:
 
 # Required
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PROPERTY_SECTIONS, data.NOT_A_BOOL))
-)
-def test_type_parameter_required_wrong_yaml_type(parser, macros, name, parameter_section, value):
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.NOT_A_BOOL,
+    counts=(3, 1)
+))
+def test_type_parameter_required_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -362,11 +361,11 @@ my_parameter:
 
 # Status
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PARAMETER_SECTIONS, data.STATUSES))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.STATUSES,
+    counts=(3, 1)
+))
 def test_type_parameter_status(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -398,13 +397,12 @@ my_parameter:
 
 # Constraints
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,value',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(PROPERTY_SECTIONS, data.NOT_A_LIST))
-)
-def test_type_parameter_constraints_wrong_yaml_type(parser, macros, name, parameter_section,
-                                                    value):
+@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
+    PARAMETER_SECTIONS,
+    data.NOT_A_LIST,
+    counts=(3, 1)
+))
+def test_type_parameter_constraints_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -419,7 +417,7 @@ my_parameter:
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_constraints_empty(parser, macros, name, parameter_section):
+def test_type_parameter_constraints_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -433,13 +431,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_VALUE))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_VALUE,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_value(parser, macros, name, parameter_section,
                                                constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -463,13 +459,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_VALUE_LIST))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_VALUE_LIST,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_value_list(parser, macros, name, parameter_section,
                                                     constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -496,13 +490,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_VALUE_RANGE))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_VALUE_RANGE,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_value_range(parser, macros, name, parameter_section,
                                                      constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -528,13 +520,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_VALUE_RANGE))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_VALUE_RANGE,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_value_range_too_many(parser, macros, name,
                                                               parameter_section, constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -561,13 +551,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_failure()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_VALUE_RANGE))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_VALUE_RANGE,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_value_range_invalid(macros, parser, name,
                                                              parameter_section, constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -625,13 +613,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section)).assert_failure()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_NON_NEGATIVE_INT))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_NON_NEGATIVE_INT,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_integer(parser, macros, name, parameter_section,
                                                  constraint):
     parser.parse_literal(MACROS[macros] + """
@@ -648,13 +634,11 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'macros,name,parameter_section,constraint',
-    ((s[0], s[1], s[2], v)
-     for s, v in itertools.product(
-         PROPERTY_SECTIONS,
-         data.CONSTRAINTS_WITH_NON_NEGATIVE_INT))
-)
+@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
+    PROPERTY_SECTIONS,
+    data.CONSTRAINTS_WITH_NON_NEGATIVE_INT,
+    counts=(3, 1)
+))
 def test_type_parameter_constraints_with_integer_bad(parser, macros, name, parameter_section,
                                                      constraint):
     parser.parse_literal(MACROS[macros] + """

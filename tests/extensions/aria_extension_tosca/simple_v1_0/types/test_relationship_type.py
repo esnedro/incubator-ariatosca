@@ -22,7 +22,7 @@ from .. import data
 # Valid target types
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_relationship_type_valid_target_types_wrong_yaml_type(parser, value):
+def test_relationship_type_valid_target_types_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 relationship_types:
@@ -32,7 +32,7 @@ relationship_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_relationship_type_valid_target_types_element_wrong_yaml_type(parser, value):
+def test_relationship_type_valid_target_types_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 relationship_types:
@@ -41,7 +41,7 @@ relationship_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_relationship_type_valid_target_types_empty(parser):
+def test_relationship_type_valid_target_types_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 relationship_types:

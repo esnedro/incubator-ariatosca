@@ -14,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
 
 
 # Syntax
 
 @pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_template_unsupported_field(parser, name):
+def test_template_syntax_unsupported(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:
@@ -36,11 +35,11 @@ topology_template:
 
 # Description
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TEMPLATE_NAMES,
     data.NOT_A_STRING
 ))
-def test_template_description_wrong_yaml_type(parser, name, value):
+def test_template_description_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:
@@ -52,11 +51,11 @@ topology_template:
 
 # Type
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TEMPLATE_NAMES,
     data.NOT_A_STRING
 ))
-def test_template_type_wrong_yaml_type(parser, name, value):
+def test_template_type_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:

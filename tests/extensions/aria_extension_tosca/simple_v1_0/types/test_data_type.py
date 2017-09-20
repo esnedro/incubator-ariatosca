@@ -14,11 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from .. import data
+from .....mechanisms.utils import matrix
 
 
 # Derived from primitive
@@ -35,11 +34,11 @@ data_types:
 
 # Constraints
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.PRIMITIVE_TYPE_NAMES,
     data.NOT_A_LIST
 ))
-def test_data_type_constraints_wrong_yaml_type(parser, name, value):
+def test_data_type_constraints_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 data_types:
@@ -50,7 +49,7 @@ data_types:
 
 
 @pytest.mark.parametrize('name', data.PRIMITIVE_TYPE_NAMES)
-def test_data_type_constraints_empty(parser, name):
+def test_data_type_constraints_syntax_empty(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 data_types:
@@ -60,10 +59,10 @@ data_types:
 """, dict(name=name)).assert_success()
 
 
-def test_data_type_constraints_not_primitive(parser):
+def test_data_type_constraints_not_derived_from_primitive(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 data_types:
   MyType:
-    constraints: [] # can't have constraints if not a primitive
+    constraints: [] # can't have constraints if not derived from primitive
 """).assert_failure()

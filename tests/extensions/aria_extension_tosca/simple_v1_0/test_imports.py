@@ -54,13 +54,14 @@ def repository():
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_imports_wrong_yaml_type(parser, value):
+def test_imports_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports: {{ value }}
 """, dict(value=value)).assert_failure()
 
-def test_imports_unsupported_field(parser):
+
+def test_imports_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -68,7 +69,7 @@ imports:
 """).assert_failure()
 
 
-def test_imports_empty(parser):
+def test_imports_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports: []

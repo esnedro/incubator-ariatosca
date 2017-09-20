@@ -33,7 +33,6 @@ TYPE_NAME_PLURAL = {
 PRIMITIVE_TYPE_NAMES = ('string', 'integer', 'float', 'boolean')
 PARAMETER_SECTION_NAMES = ('properties', 'attributes')
 TEMPLATE_NAMES = ('node', 'group', 'relationship', 'policy')
-TEMPLATE_WITH_INTERFACE_NAMES = ('node', 'group', 'relationship')
 TEMPLATE_NAME_SECTIONS = {
     'node': 'node_templates',
     'group': 'groups',
@@ -59,7 +58,7 @@ NOT_A_DICT = ('null', 'true', 'a string', '123', '0.123', '[]')
 NOT_A_DICT_OR_STRING = ('null', 'true', '123', '0.123', '[]')
 NOT_A_LIST = ('null', 'true', 'a string', '123', '0.123', '{}')
 NOT_A_STRING = ('null', 'true', '123', '0.123', '[]', '{}')
-NOT_A_BOOL = ('null', '123', '0.123', '[]', '{}')
+NOT_A_BOOL = ('null', 'a string', '123', '0.123', '[]', '{}')
 NOT_A_RANGE = NOT_A_LIST + (
     '[]', '[ 1 ]', '[ 1, 2, 3 ]',
     '[ 1, 1 ]', '[ 2, 1 ]',

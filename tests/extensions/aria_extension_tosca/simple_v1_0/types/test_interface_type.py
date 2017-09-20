@@ -21,7 +21,7 @@ from .. import data
 
 # Operations
 
-def test_interface_type_operation_empty(parser):
+def test_interface_type_operation_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
@@ -33,7 +33,7 @@ interface_types:
 # Operation description
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_interface_type_operation_description_wrong_yaml_type(parser, value):
+def test_interface_type_operation_description_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
@@ -80,7 +80,7 @@ interface_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_interface_type_operation_implementation_wrong_yaml_type(parser, value):
+def test_interface_type_operation_implementation_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
@@ -91,8 +91,21 @@ interface_types:
 """, dict(value=value)).assert_failure()
 
 
+@pytest.mark.parametrize('value', data.NOT_A_LIST)
+def test_interface_type_operation_dependencies_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  MyType:
+    my_operation:
+      implementation:
+        primary: an implementation
+        dependencies: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_interface_type_operation_dependencies_wrong_yaml_type(parser, value):
+def test_interface_type_operation_dependencies_element_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:

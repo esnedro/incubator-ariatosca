@@ -34,7 +34,7 @@ artifact_types:
 # MIME type
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_artifact_type_mime_type_wrong_yaml_type(parser, value):
+def test_artifact_type_mime_type_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
@@ -46,7 +46,7 @@ artifact_types:
 # File extension
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_artifact_type_file_ext_wrong_yaml_type(parser, value):
+def test_artifact_type_file_ext_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
@@ -55,7 +55,7 @@ artifact_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_artifact_type_file_ext_empty(parser):
+def test_artifact_type_file_ext_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
@@ -65,7 +65,7 @@ artifact_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_artifact_type_file_ext_element_wrong_yaml_type(parser, value):
+def test_artifact_type_file_ext_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:

@@ -14,20 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
 
 
 # Syntax
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.NOT_A_DICT
 ))
-def test_type_wrong_yaml_type(parser, name, value):
+def test_type_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -36,7 +35,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 
 @pytest.mark.parametrize('name', data.TYPE_NAMES_NO_UNSUPPORTED_FIELDS)
-def test_type_unsupported_field(parser, name):
+def test_type_syntax_unsupported(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -46,7 +45,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 
 @pytest.mark.parametrize('name', data.TYPE_NAMES)
-def test_type_empty(parser, name):
+def test_type_syntax_empty(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -56,11 +55,11 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 # Description
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.NOT_A_STRING
 ))
-def test_type_description_wrong_yaml_type(parser, name, value):
+def test_type_description_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -81,11 +80,11 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 # Derived from
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.NOT_A_STRING
 ))
-def test_type_derived_from_wrong_yaml_type(parser, name, value):
+def test_type_derived_from_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -141,7 +140,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 # Version
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.GOOD_VERSIONS
 ))
@@ -154,7 +153,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name, value=value)).assert_success()
 
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.BAD_VERSIONS
 ))

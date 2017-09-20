@@ -14,24 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from .. import data
+from .....mechanisms.utils import matrix
 
 
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_topology_template_wrong_yaml_type(parser, value):
+def test_topology_template_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
-def test_topology_template_unsupported_field(parser):
+def test_topology_template_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:
@@ -39,18 +38,18 @@ topology_template:
 """).assert_failure()
 
 
-def test_topology_template_empty(parser):
+def test_topology_template_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template: {}
 """).assert_success()
 
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     data.TEMPLATE_NAMES,
     data.NOT_A_DICT
 ))
-def test_topology_template_template_section_wrong_yaml_type(parser, name, value):
+def test_topology_template_template_section_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:
@@ -59,7 +58,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_topology_template_template_section_empty(parser, name):
+def test_topology_template_template_section_syntax_empty(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template:

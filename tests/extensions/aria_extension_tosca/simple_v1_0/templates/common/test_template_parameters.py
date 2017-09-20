@@ -14,23 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
 
 
 # Syntax
 
-@pytest.mark.parametrize(
-    'name,parameter_section,value',
-    ((s[0], s[1], v)
-     for s, v in itertools.product(
-         data.TEMPLATE_PARAMETER_SECTIONS,
-         data.NOT_A_DICT))
-)
-def test_template_parameter_section_wrong_yaml_type(parser, name, parameter_section, value):
+@pytest.mark.parametrize('name,parameter_section,value', matrix(
+    data.TEMPLATE_PARAMETER_SECTIONS,
+    data.NOT_A_DICT,
+    counts=(2, 1)
+))
+def test_template_parameter_section_syntax_type(parser, name, parameter_section, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -45,7 +42,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
-def test_template_parameter_section_empty(parser, name, parameter_section):
+def test_template_parameter_section_syntax_empty(parser, name, parameter_section):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -60,7 +57,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('name,parameter_section', data.TEMPLATE_PARAMETER_SECTIONS)
-def test_template_parameter_unsupported_field(parser, name, parameter_section):
+def test_template_parameter_syntax_unsupported(parser, name, parameter_section):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{ name }}_types:
@@ -71,7 +68,7 @@ topology_template:
       type: MyType
       {{ parameter_section }}:
         my_parameter:
-          unsupported
+          unsupported: {}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
           parameter_section=parameter_section)).assert_failure()
 
@@ -97,7 +94,7 @@ topology_template:
           parameter_section=parameter_section)).assert_failure()
 
 
-@pytest.mark.parametrize('name,type_name', itertools.product(
+@pytest.mark.parametrize('name,type_name', matrix(
     data.TEMPLATE_NAMES,
     data.PARAMETER_TYPE_NAMES
 ))
@@ -122,7 +119,7 @@ topology_template:
           type_name=type_name)).assert_failure()
 
 
-@pytest.mark.parametrize('name,type_name', itertools.product(
+@pytest.mark.parametrize('name,type_name', matrix(
     data.TEMPLATE_NAMES,
     data.PARAMETER_TYPE_NAMES
 ))
@@ -148,13 +145,11 @@ topology_template:
           type_name=type_name)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'name,type_name,value',
-    ((s, v[0], v[1])
-     for s, v in itertools.product(
-         data.TEMPLATE_NAMES,
-         data.PARAMETER_VALUES))
-)
+@pytest.mark.parametrize('name,type_name,value', matrix(
+    data.TEMPLATE_NAMES,
+    data.PARAMETER_VALUES,
+    counts=(1, 2)
+))
 def test_template_property_required_with_default(parser, name, type_name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -179,13 +174,11 @@ topology_template:
 
 # Entry schema
 
-@pytest.mark.parametrize(
-    'name,parameter_section,values',
-    ((s[0], s[1], v)
-     for s, v in itertools.product(
-         data.TEMPLATE_PARAMETER_SECTIONS,
-         data.ENTRY_SCHEMA_VALUES))
-)
+@pytest.mark.parametrize('name,parameter_section,values', matrix(
+    data.TEMPLATE_PARAMETER_SECTIONS,
+    data.ENTRY_SCHEMA_VALUES,
+    counts=(2, 1)
+))
 def test_template_parameter_map(parser, name, parameter_section, values):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -213,13 +206,11 @@ topology_template:
           values=values)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'name,parameter_section,values',
-    ((s[0], s[1], v)
-     for s, v in itertools.product(
-         data.TEMPLATE_PARAMETER_SECTIONS,
-         data.ENTRY_SCHEMA_VALUES_BAD))
-)
+@pytest.mark.parametrize('name,parameter_section,values', matrix(
+    data.TEMPLATE_PARAMETER_SECTIONS,
+    data.ENTRY_SCHEMA_VALUES_BAD,
+    counts=(2, 1)
+))
 def test_template_parameter_map_bad(parser, name, parameter_section, values):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -299,13 +290,11 @@ topology_template:
           parameter_section=parameter_section)).assert_failure()
 
 
-@pytest.mark.parametrize(
-    'name,parameter_section,values',
-    ((s[0], s[1], v)
-     for s, v in itertools.product(
-         data.TEMPLATE_PARAMETER_SECTIONS,
-         data.ENTRY_SCHEMA_VALUES))
-)
+@pytest.mark.parametrize('name,parameter_section,values', matrix(
+    data.TEMPLATE_PARAMETER_SECTIONS,
+    data.ENTRY_SCHEMA_VALUES,
+    counts=(2, 1)
+))
 def test_template_parameter_list(parser, name, parameter_section, values):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -333,13 +322,11 @@ topology_template:
           values=values)).assert_success()
 
 
-@pytest.mark.parametrize(
-    'name,parameter_section,values',
-    ((s[0], s[1], v)
-     for s, v in itertools.product(
-         data.TEMPLATE_PARAMETER_SECTIONS,
-         data.ENTRY_SCHEMA_VALUES_BAD))
-)
+@pytest.mark.parametrize('name,parameter_section,values', matrix(
+    data.TEMPLATE_PARAMETER_SECTIONS,
+    data.ENTRY_SCHEMA_VALUES_BAD,
+    counts=(2, 1)
+))
 def test_template_parameter_list_bad(parser, name, parameter_section, values):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0

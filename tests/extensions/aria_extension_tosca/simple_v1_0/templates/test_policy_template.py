@@ -22,7 +22,7 @@ from .. import data
 # Targets
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_policy_template_targets_wrong_yaml_type(parser, value):
+def test_policy_template_targets_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -36,7 +36,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_policy_template_targets_element_wrong_yaml_type(parser, value):
+def test_policy_template_targets_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -49,7 +49,7 @@ topology_template:
 """, dict(value=value)).assert_failure()
 
 
-def test_policy_template_targets_empty(parser):
+def test_policy_template_targets_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:

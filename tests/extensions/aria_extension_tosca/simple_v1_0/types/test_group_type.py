@@ -22,7 +22,7 @@ from .. import data
 # Members
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_group_type_members_wrong_yaml_type(parser, value):
+def test_group_type_members_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:
@@ -32,7 +32,7 @@ group_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_group_type_members_element_wrong_yaml_type(parser, value):
+def test_group_type_members_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:
@@ -41,7 +41,7 @@ group_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_group_type_members_empty(parser):
+def test_group_type_members_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:

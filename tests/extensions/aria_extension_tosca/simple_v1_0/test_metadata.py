@@ -14,26 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from . import data
+from ....mechanisms.utils import matrix
 
 
 NORMATIVE_FIELD_NAMES = ('template_name', 'template_author', 'template_version')
 
+
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_metadata_wrong_yaml_type(parser, value):
+def test_metadata_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
-def test_metadata_empty(parser):
+def test_metadata_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata: {}
@@ -42,11 +42,11 @@ metadata: {}
 
 # Fields
 
-@pytest.mark.parametrize('field,value', itertools.product(
+@pytest.mark.parametrize('field,value', matrix(
     NORMATIVE_FIELD_NAMES,
     data.NOT_A_STRING
 ))
-def test_metadata_normative_fields_wrong_yaml_type(parser, field, value):
+def test_metadata_normative_fields_syntax_type(parser, field, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata:
@@ -55,7 +55,7 @@ metadata:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_metadata_non_normative_fields_wrong_yaml_type(parser, value):
+def test_metadata_non_normative_fields_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata:

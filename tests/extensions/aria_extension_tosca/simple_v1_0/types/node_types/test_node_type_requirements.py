@@ -22,7 +22,7 @@ from ... import data
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_node_type_requirement_wrong_yaml_type(parser, value):
+def test_node_type_requirement_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -32,7 +32,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_requirement_unsupported_field(parser):
+def test_node_type_requirement_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -46,7 +46,7 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_requirement_empty(parser):
+def test_node_type_requirement_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -59,7 +59,7 @@ node_types:
 # Capability
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
-def test_node_type_requirement_capability_wrong_yaml_type(parser, value):
+def test_node_type_requirement_capability_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -70,7 +70,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_requirement_capability_unsupported_field(parser):
+def test_node_type_requirement_capability_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -129,7 +129,7 @@ node_types:
 # Node
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_type_requirement_node_wrong_yaml_type(parser, value):
+def test_node_type_requirement_node_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -182,7 +182,7 @@ node_types:
 # Relationship
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
-def test_node_type_requirement_relationship_type_wrong_yaml_type(parser, value):
+def test_node_type_requirement_relationship_type_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -196,7 +196,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_requirement_relationship_unsupported_field(parser):
+def test_node_type_requirement_relationship_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:

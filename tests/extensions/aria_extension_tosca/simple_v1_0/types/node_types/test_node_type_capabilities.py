@@ -21,7 +21,7 @@ from ... import data
 # Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_node_type_capability_wrong_yaml_type(parser, value):
+def test_node_type_capability_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -31,7 +31,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_capability_unsupported_field(parser):
+def test_node_type_capability_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -45,7 +45,7 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_capability_empty(parser):
+def test_node_type_capability_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -58,7 +58,7 @@ node_types:
 # Description
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_type_capability_description_wrong_yaml_type(parser, value):
+def test_node_type_capability_description_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -89,7 +89,7 @@ node_types:
 # Type
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_type_capability_type_wrong_yaml_type(parser, value):
+def test_node_type_capability_type_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -169,7 +169,7 @@ node_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_node_type_capability_valid_source_types_wrong_yaml_type(parser, value):
+def test_node_type_capability_valid_source_types_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -184,7 +184,7 @@ node_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_type_capability_valid_source_types_element_wrong_yaml_type(parser, value):
+def test_node_type_capability_valid_source_types_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -198,7 +198,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_capability_valid_source_empty(parser):
+def test_node_type_capability_valid_source_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:

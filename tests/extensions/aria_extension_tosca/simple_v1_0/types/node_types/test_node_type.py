@@ -14,11 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import itertools
-
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
+
 
 # All fields except "requirements", which is a sequenced list
 DICT_FIELD_NAMES = ('properties', 'attributes', 'capabilities', 'interfaces', 'artifacts')
@@ -26,11 +26,11 @@ DICT_FIELD_NAMES = ('properties', 'attributes', 'capabilities', 'interfaces', 'a
 
 # Fields
 
-@pytest.mark.parametrize('name,value', itertools.product(
+@pytest.mark.parametrize('name,value', matrix(
     DICT_FIELD_NAMES,
     data.NOT_A_DICT
 ))
-def test_node_type_fields_wrong_yaml_type(parser, name, value):
+def test_node_type_fields_syntax_type(parser, name, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -40,7 +40,7 @@ node_types:
 
 
 @pytest.mark.parametrize('name', DICT_FIELD_NAMES)
-def test_node_type_fields_empty(parser, name):
+def test_node_type_fields_syntax_empty(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -49,7 +49,7 @@ node_types:
 """, dict(name=name)).assert_success()
 
 
-def test_node_type_requirements_empty(parser):
+def test_node_type_requirements_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:

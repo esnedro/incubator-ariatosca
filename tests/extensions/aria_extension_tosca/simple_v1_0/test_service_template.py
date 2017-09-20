@@ -17,7 +17,7 @@
 
 # Syntax
 
-def test_service_template_unsupported_field(parser):
+def test_service_template_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 unsupported: {}

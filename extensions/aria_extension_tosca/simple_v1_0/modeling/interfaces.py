@@ -276,6 +276,10 @@ def merge_interface(context, presentation, interface_assignment, our_interface_a
                     .format(interface_name, operation_name, presentation._fullname),
                     locator=our_operation_template._locator, level=Issue.BETWEEN_TYPES)
 
+            # Failsafe to avoid exceptions for invalid assignments
+            if operation_name not in interface_assignment._raw:
+                continue
+
             if (our_input_assignments is not None) or (our_implementation is not None):
                 # Make sure we have the dict
                 if (operation_name not in interface_assignment._raw) \
@@ -285,6 +289,7 @@ def merge_interface(context, presentation, interface_assignment, our_interface_a
             if our_implementation is not None:
                 interface_assignment._raw[operation_name]['implementation'] = \
                     deepcopy_with_locators(our_implementation._raw)
+
 
             # Assign/merge operation inputs
             input_definitions = operation_definition.inputs \
