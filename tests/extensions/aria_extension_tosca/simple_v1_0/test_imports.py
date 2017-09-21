@@ -24,14 +24,12 @@ from ....mechanisms.web_server import WebServer
 
 NODE_TYPE_IMPORT = """
 node_types:
-  MyNode:
-    derived_from: tosca.nodes.Root
+  MyNode: {}
 """
 
 NODE_TYPE_IMPORT_UNICODE = """
 node_types:
-  類型:
-    derived_from: tosca.nodes.Root
+  類型: {}
 """
 
 BAD_IMPORT = """
@@ -51,17 +49,17 @@ def repository():
         yield repository.root
 
 
-# Syntax
+# Imports section
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_imports_syntax_type(parser, value):
+def test_imports_section_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
-def test_imports_syntax_unsupported(parser):
+def test_imports_section_syntax_unsupported(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -69,7 +67,7 @@ imports:
 """).assert_failure()
 
 
-def test_imports_syntax_empty(parser):
+def test_imports_section_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports: []

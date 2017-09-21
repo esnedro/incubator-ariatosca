@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,21 +15,15 @@
 # limitations under the License.
 
 
-from .loader import Loader
+# TODO
 
-
-class LiteralLoader(Loader):
-    """
-    ARIA literal loader.
-
-    See :class:`~aria.parser.loading.LiteralLocation`.
-    """
-
-    def __init__(self, location):
-        self.location = location
-
-    def load(self):
-        return self.location.content
-
-    def get_canonical_location(self):
-        return self.location
+def test_topology_template_fields(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType: {}
+topology_template:
+  description: a description
+  substitution_mappings:
+    node_type: MyType
+""").assert_success()

@@ -39,14 +39,6 @@ TEMPLATE_NAME_SECTIONS = {
     'relationship': 'relationship_templates',
     'policy': 'policies'
 }
-TEMPLATE_PARAMETER_SECTIONS = (
-    ('node', 'properties'),
-    ('node', 'attributes'),
-    ('group', 'properties'),
-    ('relationship', 'properties'),
-    ('relationship', 'attributes'),
-    ('policy', 'properties')
-)
 CONSTRAINTS_WITH_VALUE = ('equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal')
 CONSTRAINTS_WITH_VALUE_LIST = ('valid_values',)
 CONSTRAINTS_WITH_VALUE_RANGE = ('in_range',)

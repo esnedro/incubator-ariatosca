@@ -179,14 +179,14 @@ PROPERTY_SECTIONS = (
 )
 
 
-# Syntax
+# Parameters section
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
     PARAMETER_SECTIONS,
     data.NOT_A_DICT,
     counts=(3, 1)
 ))
-def test_type_parameter_section_syntax_type(parser, macros, name, parameter_section, value):
+def test_type_parameters_section_syntax_type(parser, macros, name, parameter_section, value):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -199,7 +199,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
-def test_type_parameter_section_syntax_empty(parser, macros, name, parameter_section):
+def test_type_parameters_section_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
@@ -210,6 +210,8 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 {% endcall %}
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
+
+# Parameter
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
     PARAMETER_SECTIONS,

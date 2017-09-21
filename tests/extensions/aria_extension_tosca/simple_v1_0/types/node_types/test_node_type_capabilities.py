@@ -18,7 +18,29 @@ import pytest
 
 from ... import data
 
-# Syntax
+
+# Capabilities section
+
+@pytest.mark.parametrize('value', data.NOT_A_DICT)
+def test_node_type_capabilities_section_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    capabilities: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_capabilities_section_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    capabilities: {}
+""").assert_success()
+
+
+# Capability
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
 def test_node_type_capability_syntax_type(parser, value):
@@ -153,21 +175,6 @@ node_types:
 
 # Valid source types
 
-def test_node_type_capability_valid_source_types(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType1:
-    capabilities:
-      my_capability:
-        type: MyType
-        valid_source_types: [ MyType1, MyType2 ]
-  MyType2: {}
-""").assert_success()
-
-
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
 def test_node_type_capability_valid_source_types_syntax_type(parser, value):
     parser.parse_literal("""
@@ -198,7 +205,7 @@ node_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_node_type_capability_valid_source_syntax_empty(parser):
+def test_node_type_capability_valid_source_types_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -209,6 +216,22 @@ node_types:
       my_capability:
         type: MyType
         valid_source_types: []
+""").assert_success()
+
+
+
+def test_node_type_capability_valid_source_types(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType1:
+    capabilities:
+      my_capability:
+        type: MyType
+        valid_source_types: [ MyType1, MyType2 ]
+  MyType2: {}
 """).assert_success()
 
 

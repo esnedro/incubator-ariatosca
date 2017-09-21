@@ -56,8 +56,10 @@ test:
 	    -e py$(PYTHON_VERSION) \
 	    -e py$(PYTHON_VERSION)e2e \
 	    -e py$(PYTHON_VERSION)ssh \
+	    -e py$(PYTHON_VERSION)extensions \
 	    -e docs
 
 ./requirements.txt: ./requirements.in
 	pip install --upgrade "pip-tools>=1.9.0"
+	rm ./requirements.txt
 	pip-compile --output-file ./requirements.txt ./requirements.in

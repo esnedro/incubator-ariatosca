@@ -51,13 +51,13 @@ class Parser(object):
     def __init__(self):
         self.verbose = False
 
-    def parse_literal(self, text, context=None):
+    def parse_literal(self, text, context=None, import_profile=False):
         text = render(text, context)
-        parsed = self._parse_literal(text)
+        parsed = self._parse_literal(text, import_profile)
         parsed.verbose = self.verbose
         return parsed
 
-    def _parse_literal(self, text):
+    def _parse_literal(self, text, import_profile):
         raise NotImplementedError
 
     def __enter__(self):

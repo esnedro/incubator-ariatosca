@@ -20,8 +20,6 @@ from ... import data
 from ......mechanisms.utils import matrix
 
 
-# Syntax
-
 @pytest.mark.parametrize('name,value', matrix(
     data.TYPE_NAMES,
     data.NOT_A_DICT

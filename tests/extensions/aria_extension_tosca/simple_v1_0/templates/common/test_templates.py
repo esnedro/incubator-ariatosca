@@ -20,7 +20,30 @@ from ... import data
 from ......mechanisms.utils import matrix
 
 
-# Syntax
+# Templates section
+
+@pytest.mark.parametrize('name,value', matrix(
+    data.TEMPLATE_NAMES,
+    data.NOT_A_DICT
+))
+def test_templates_section_syntax_type(parser, name, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}: {{ value }}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
+def test_templates_section_syntax_empty(parser, name):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+topology_template:
+  {{ section }}: {}
+""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
+
+
+# Template
 
 @pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
 def test_template_syntax_unsupported(parser, name):

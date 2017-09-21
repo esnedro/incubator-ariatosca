@@ -221,7 +221,7 @@ class FixedThreadPoolExecutor(Executor):
         self._workers = []
         for index in range(size):
             worker = DaemonThread(
-                name='%s%d' % (self.__class__.__name__, index),
+                name='{0}{1:d}'.format(self.__class__.__name__, index),
                 target=self._thread_worker)
             worker.start()
             self._workers.append(worker)

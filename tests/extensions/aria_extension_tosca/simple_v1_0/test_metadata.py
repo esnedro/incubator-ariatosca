@@ -23,17 +23,17 @@ from ....mechanisms.utils import matrix
 NORMATIVE_FIELD_NAMES = ('template_name', 'template_author', 'template_version')
 
 
-# Syntax
+# Metadata section
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_metadata_syntax_type(parser, value):
+def test_metadata_section_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
-def test_metadata_syntax_empty(parser):
+def test_metadata_section_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 metadata: {}
@@ -62,6 +62,8 @@ metadata:
     non_normative: {{ value }}
 """, dict(value=value)).assert_failure()
 
+
+# Template version
 
 @pytest.mark.parametrize('value', data.GOOD_VERSIONS)
 def test_metadata_normative_template_version(parser, value):

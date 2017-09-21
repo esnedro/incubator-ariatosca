@@ -52,6 +52,7 @@ class FileTextLoader(Loader):
                 raise LoaderException(u'file I/O error: "{0}"'.format(self.path), cause=e)
             except Exception as e:
                 raise LoaderException(u'file error: "{0}"'.format(self.path), cause=e)
+            self._file = None
 
     def load(self):
         if self._file is not None:

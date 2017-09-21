@@ -69,7 +69,6 @@ def consume_node_cellar(consumer_class_name='instance', cache=True):
         consumer_class_name=consumer_class_name,
         inputs_uri=get_service_template_uri('tosca-simple-1.0', 'node-cellar', 'inputs.yaml'),
         cache=cache
-
     )
 
 

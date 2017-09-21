@@ -31,9 +31,11 @@ class PresentationContext(object):
     :vartype presenter_class: type
     :ivar import_profile: whether to import the profile by default (defaults to ``True``)
     :vartype import_profile: bool
-    :ivar threads: number of threads to use when reading data
+    :ivar cache: whether to cache presentations (defaults to ``True``)
+    :vartype cache: bool
+    :ivar threads: number of threads to use when reading data (defaults to 8)
     :vartype threads: int
-    :ivar timeout: timeout in seconds for loading data
+    :ivar timeout: timeout in seconds for loading data (defaults to 10)
     :vartype timeout: float
     :ivar print_exceptions: whether to print exceptions while reading data
     :vartype print_exceptions: bool
@@ -45,6 +47,7 @@ class PresentationContext(object):
         self.presenter_source = DefaultPresenterSource()
         self.presenter_class = None  # overrides
         self.import_profile = True
+        self.cache = True
         self.threads = 8  # reasonable default for networking multithreading
         self.timeout = 10  # in seconds
         self.print_exceptions = False

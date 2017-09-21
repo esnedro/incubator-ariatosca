@@ -712,7 +712,7 @@ def split_prefix(string):
     Splits the prefix on the first non-escaped ">".
     """
 
-    split = IMPLEMENTATION_PREFIX_REGEX.split(string, 1)
+    split = IMPLEMENTATION_PREFIX_REGEX.split(string, 1) if string is not None else ()
     if len(split) < 2:
         return None, None
     return split[0].strip(), split[1].strip()

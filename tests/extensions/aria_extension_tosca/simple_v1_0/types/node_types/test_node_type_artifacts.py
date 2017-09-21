@@ -17,42 +17,61 @@
 import pytest
 
 from ... import data
-from ......mechanisms.utils import matrix
 
 
-# All fields except "requirements", which is a sequenced list
-DICT_FIELD_NAMES = ('properties', 'attributes', 'capabilities', 'interfaces', 'artifacts')
+# Artifacts section
 
-
-# Fields
-
-@pytest.mark.parametrize('name,value', matrix(
-    DICT_FIELD_NAMES,
-    data.NOT_A_DICT
-))
-def test_node_type_fields_syntax_type(parser, name, value):
+@pytest.mark.parametrize('value', data.NOT_A_DICT)
+def test_node_type_artifacts_section_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
   MyType:
-    {{ name }}: {{ value }}
-""", dict(name=name, value=value)).assert_failure()
+    artifacts: {{ value }}
+""", dict(value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('name', DICT_FIELD_NAMES)
-def test_node_type_fields_syntax_empty(parser, name):
+def test_node_type_artifacts_section_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
   MyType:
-    {{ name }}: {}
-""", dict(name=name)).assert_success()
-
-
-def test_node_type_requirements_syntax_empty(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType:
-    requirements: []
+    artifacts: {}
 """).assert_success()
+
+
+# Artifact
+
+@pytest.mark.parametrize('value', data.NOT_A_DICT)
+def test_node_type_artifact_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    artifacts:
+      my_artifact: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_artifact_syntax_unsupported(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+artifact_types:
+  MyType: {}
+node_types:
+  MyType:
+    artifacts:
+      my_artifact:
+        type: MyType
+        unsupported: {}
+""").assert_failure()
+
+
+def test_node_type_artifact_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    artifacts:
+      my_artifact: {} # "type" is required
+""").assert_failure()

@@ -165,6 +165,7 @@ node_types:
         inputs:
           github_url:
             type: string
+            required: false # ARIA NOTE: missing in spec
 
   tosca.nodes.Container.Application.Docker:
     _extensions:

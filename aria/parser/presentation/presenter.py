@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from copy import deepcopy
+
 from ...utils.collections import merge
 from ...utils.formatting import safe_repr
 from ..validation import Issue
@@ -51,7 +53,7 @@ class Presenter(Presentation):
         return True
 
     def _merge_import(self, presentation):
-        merge(self._raw, presentation._raw)
+        merge(self._raw, deepcopy(presentation._raw))
         if hasattr(self._raw, '_locator') and hasattr(presentation._raw, '_locator'):
             self._raw._locator.merge(presentation._raw._locator)
 

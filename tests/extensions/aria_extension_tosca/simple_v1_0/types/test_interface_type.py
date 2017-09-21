@@ -19,7 +19,7 @@ import pytest
 from .. import data
 
 
-# Operations
+# Operation
 
 def test_interface_type_operation_syntax_empty(parser):
     parser.parse_literal("""
@@ -105,7 +105,7 @@ interface_types:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_interface_type_operation_dependencies_element_syntax_type(parser, value):
+def test_interface_type_operation_dependencies_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
@@ -116,6 +116,18 @@ interface_types:
         dependencies:
           - {{ value }}
 """, dict(value=value)).assert_failure()
+
+
+def test_interface_type_operation_dependencies_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  MyType:
+    my_operation:
+      implementation:
+        primary: an implementation
+        dependencies: []
+""").assert_success()
 
 
 # Unicode

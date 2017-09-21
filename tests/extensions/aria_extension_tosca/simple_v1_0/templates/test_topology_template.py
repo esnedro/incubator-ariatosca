@@ -17,10 +17,7 @@
 import pytest
 
 from .. import data
-from .....mechanisms.utils import matrix
 
-
-# Syntax
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
 def test_topology_template_syntax_type(parser, value):
@@ -42,51 +39,4 @@ def test_topology_template_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 topology_template: {}
-""").assert_success()
-
-
-@pytest.mark.parametrize('name,value', matrix(
-    data.TEMPLATE_NAMES,
-    data.NOT_A_DICT
-))
-def test_topology_template_template_section_syntax_type(parser, name, value):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-topology_template:
-  {{ section }}: {{ value }}
-""", dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
-
-
-@pytest.mark.parametrize('name', data.TEMPLATE_NAMES)
-def test_topology_template_template_section_syntax_empty(parser, name):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-topology_template:
-  {{ section }}: {}
-""", dict(section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
-
-
-def test_topology_template_fields(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  description: a description
-  substitution_mappings:
-    node_type: MyType
-""").assert_success()
-
-
-# Unicode
-
-def test_topology_template_unicode(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  類型: {}
-topology_template:
-  description: 描述
-  substitution_mappings:
-    node_type: 類型
 """).assert_success()

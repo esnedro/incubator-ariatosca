@@ -19,18 +19,6 @@ import pytest
 from .. import data
 
 
-# Syntax
-
-def test_artifact_type_fields(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-artifact_types:
-  MyType:
-    mime_type: a mime type
-    file_ext: [ an extension ]
-""").assert_success()
-
-
 # MIME type
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
@@ -55,15 +43,6 @@ artifact_types:
 """, dict(value=value)).assert_failure()
 
 
-def test_artifact_type_file_ext_syntax_empty(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-artifact_types:
-  MyType:
-    file_ext: []
-""").assert_success()
-
-
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
 def test_artifact_type_file_ext_syntax_element_type(parser, value):
     parser.parse_literal("""
@@ -72,3 +51,12 @@ artifact_types:
   MyType:
     file_ext: [ {{ value }} ]
 """, dict(value=value)).assert_failure()
+
+
+def test_artifact_type_file_ext_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+artifact_types:
+  MyType:
+    file_ext: []
+""").assert_success()

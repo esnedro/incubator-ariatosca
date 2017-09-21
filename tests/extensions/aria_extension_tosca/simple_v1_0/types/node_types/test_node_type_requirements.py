@@ -19,7 +19,28 @@ import pytest
 from ... import data
 
 
-# Syntax
+# Requirements section
+
+@pytest.mark.parametrize('value', data.NOT_A_LIST)
+def test_node_type_requirements_section_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    requirements: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_node_type_requirements_section_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+node_types:
+  MyType:
+    requirements: []
+""").assert_success()
+
+
+# Requirement
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
 def test_node_type_requirement_syntax_type(parser, value):
@@ -95,6 +116,8 @@ node_types:
       - my_requirement: MyType
 """).assert_success()
 
+
+# Capability type
 
 def test_node_type_requirement_capability_type_unknown(parser):
     parser.parse_literal("""
@@ -182,7 +205,7 @@ node_types:
 # Relationship
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
-def test_node_type_requirement_relationship_type_syntax_type(parser, value):
+def test_node_type_requirement_relationship_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -225,6 +248,24 @@ node_types:
           capability: MyType
           relationship: MyType
 """).assert_success()
+
+
+# Relationship type
+
+@pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
+def test_node_type_requirement_relationship_type_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: {{ value }}
+""", dict(value=value)).assert_failure()
 
 
 def test_node_type_requirement_relationship_type_unknown(parser):
