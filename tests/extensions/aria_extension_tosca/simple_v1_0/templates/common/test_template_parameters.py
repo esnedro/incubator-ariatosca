@@ -23,13 +23,349 @@ from ......mechanisms.utils import matrix
 MAIN_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
+{% macro type_parameters() %}
+    {{ parameter_section }}: {{ caller()|indent(6) }}
+{%- endmacro %}
 {% macro parameters() %}
       {{ parameter_section }}: {{ caller()|indent(8) }}
 {%- endmacro %}
 """
 
+INTERFACE_MACROS = """
+{% macro additions() %}
+{%- endmacro %}
+{% macro type_parameters() %}
+    interfaces:
+      MyInterface:
+        type: MyType
+interface_types:
+  MyType:
+    {{ parameter_section }}: {{ caller()|indent(8) }}
+{%- endmacro %}
+{% macro parameters() %}
+      interfaces:
+        MyInterface:
+          {{ parameter_section }}: {{ caller()|indent(12) }}
+{%- endmacro %}
+"""
+
+
+OPERATION_MACROS = """
+{% macro additions() %}
+{%- endmacro %}
+{% macro type_parameters() %}
+    interfaces:
+      MyInterface:
+        type: MyType
+interface_types:
+  MyType:
+    my_operation:
+      {{ parameter_section }}: {{ caller()|indent(10) }}
+{%- endmacro %}
+{% macro parameters() %}
+      interfaces:
+        MyInterface:
+          my_operation:
+            {{ parameter_section }}: {{ caller()|indent(14) }}
+{%- endmacro %}
+"""
+
+LOCAL_INTERFACE_MACROS = """
+{% macro additions() %}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    interfaces:
+      MyInterface:
+        type: MyType
+        {{ parameter_section }}: {{ caller()|indent(10) }}
+{%- endmacro %}
+{% macro parameters() %}
+      interfaces:
+        MyInterface:
+          {{ parameter_section }}: {{ caller()|indent(12) }}
+{%- endmacro %}
+"""
+
+LOCAL_OPERATION_MACROS = """
+{% macro additions() %}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    interfaces:
+      MyInterface:
+        type: MyType
+        my_operation:
+          {{ parameter_section }}: {{ caller()|indent(12) }}
+{%- endmacro %}
+{% macro parameters() %}
+      interfaces:
+        MyInterface:
+          my_operation:
+            {{ parameter_section }}: {{ caller()|indent(14) }}
+{%- endmacro %}
+"""
+
+
+RELATIONSHIP_TYPE_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+relationship_types:
+  MyType:
+    {{ parameter_section }}: {{ caller()|indent(6) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              {{ parameter_section }}: {{ caller()|indent(16) }}
+{%- endmacro %}
+"""
+
+
+RELATIONSHIP_LOCAL_INTERFACE_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+            interfaces:
+              MyInterface:
+                type: MyType
+                {{ parameter_section }}: {{ caller()|indent(18) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  {{ parameter_section }}: {{ caller()|indent(20) }}
+{%- endmacro %}
+"""
+
+RELATIONSHIP_INTERFACE_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+            interfaces:
+              MyInterface:
+                type: MyType
+interface_types:
+  MyType:
+    {{ parameter_section }}: {{ caller()|indent(8) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  {{ parameter_section }}: {{ caller()|indent(20) }}
+{%- endmacro %}
+"""
+
+RELATIONSHIP_OPERATION_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+            interfaces:
+              MyInterface:
+                type: MyType
+interface_types:
+  MyType:
+    my_operation:
+      {{ parameter_section }}: {{ caller()|indent(10) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  my_operation:
+                    {{ parameter_section }}: {{ caller()|indent(22) }}
+{%- endmacro %}
+"""
+
+
+RELATIONSHIP_TYPE_INTERFACE_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+relationship_types:
+  MyType:
+    interfaces:
+      MyInterface:
+        type: MyType
+        {{ parameter_section }}: {{ caller()|indent(10) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  {{ parameter_section }}: {{ caller()|indent(20) }}
+{%- endmacro %}
+"""
+
+RELATIONSHIP_TYPE_OPERATION_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+relationship_types:
+  MyType:
+    interfaces:
+      MyInterface:
+        type: MyType
+        my_operation:
+          {{ parameter_section }}: {{ caller()|indent(12) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  my_operation:
+                    {{ parameter_section }}: {{ caller()|indent(22) }}
+{%- endmacro %}
+"""
+
+
+RELATIONSHIP_LOCAL_INTERFACE_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+            interfaces:
+              MyInterface:
+                type: MyType
+                {{ parameter_section }}: {{ caller()|indent(18) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  {{ parameter_section }}: {{ caller()|indent(20) }}
+{%- endmacro %}
+"""
+
+RELATIONSHIP_LOCAL_OPERATION_MACROS = """
+{% macro additions() %}
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+interface_types:
+  MyType: {}
+{%- endmacro %}
+{% macro type_parameters() %}
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship:
+            type: MyType
+            interfaces:
+              MyInterface:
+                type: MyType
+                my_operation:
+                  {{ parameter_section }}: {{ caller()|indent(20) }}
+{%- endmacro %}
+{% macro parameters() %}
+      requirements:
+        - my_requirement:
+            relationship:
+              interfaces:
+                MyInterface:
+                  my_operation:
+                    {{ parameter_section }}: {{ caller()|indent(22) }}
+{%- endmacro %}
+"""
+
 MACROS = {
-    'main': MAIN_MACROS
+    'main': MAIN_MACROS,
+    'interface': INTERFACE_MACROS,
+    'operation': OPERATION_MACROS,
+    'local-interface': LOCAL_INTERFACE_MACROS,
+    'local-operation': LOCAL_OPERATION_MACROS,
+    'relationship-type': RELATIONSHIP_TYPE_MACROS,
+    'relationship-interface': RELATIONSHIP_INTERFACE_MACROS,
+    'relationship-operation': RELATIONSHIP_OPERATION_MACROS,
+    'relationship-type-interface': RELATIONSHIP_TYPE_INTERFACE_MACROS,
+    'relationship-type-operation': RELATIONSHIP_TYPE_OPERATION_MACROS,
+    'relationship-local-interface': RELATIONSHIP_LOCAL_INTERFACE_MACROS,
+    'relationship-local-operation': RELATIONSHIP_LOCAL_OPERATION_MACROS
 }
 
 PARAMETER_SECTIONS = (
@@ -38,7 +374,26 @@ PARAMETER_SECTIONS = (
     ('main', 'group', 'properties'),
     ('main', 'relationship', 'properties'),
     ('main', 'relationship', 'attributes'),
-    ('main', 'policy', 'properties')
+    ('main', 'policy', 'properties'),
+    ('interface', 'node', 'inputs'),
+    ('interface', 'group', 'inputs'),
+    ('interface', 'relationship', 'inputs'),
+    ('operation', 'node', 'inputs'),
+    ('operation', 'group', 'inputs'),
+    ('operation', 'relationship', 'inputs'),
+    ('local-interface', 'node', 'inputs'),
+    ('local-interface', 'group', 'inputs'),
+    ('local-interface', 'relationship', 'inputs'),
+    ('local-operation', 'node', 'inputs'),
+    ('local-operation', 'group', 'inputs'),
+    ('local-operation', 'relationship', 'inputs'),
+    ('relationship-type', 'node', 'properties'),
+    ('relationship-interface', 'node', 'inputs'),
+    #('relationship-operation', 'node', 'inputs'), # fix
+    ('relationship-type-interface', 'node', 'inputs'),
+    ('relationship-type-operation', 'node', 'inputs'), # fix
+    ('relationship-local-interface', 'node', 'inputs'),
+    #('relationship-operation', 'node', 'inputs'), # fix
 )
 
 PROPERTY_SECTIONS = (
@@ -61,7 +416,10 @@ def test_template_parameters_section_syntax_type(parser, macros, name, parameter
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
 {{ name }}_types:
-  MyType: {}
+  MyType:
+{%- call type_parameters() -%}
+{}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -79,7 +437,10 @@ def test_template_parameters_section_syntax_empty(parser, macros, name, paramete
 tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
 {{ name }}_types:
-  MyType: {}
+  MyType:
+{%- call type_parameters() -%}
+{}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -100,15 +461,15 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter1:
-        type: string
+{%- call type_parameters() -%}
+{}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
       type: MyType
 {%- call parameters() %}
-my_parameter2: a value
+my_parameter: a value
 {% endcall %}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
           parameter_section=parameter_section)).assert_failure()
@@ -132,14 +493,15 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    properties:
-      my_property:
-        type: {{ type_name }}
+{%- call type_parameters() %}
+my_property:
+  type: {{ type_name }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
       type: MyType
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], parameter_section='properties',
           type_name=type_name)).assert_failure()
 
 
@@ -159,15 +521,16 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    properties:
-      my_property:
-        type: {{ type_name }}
-        required: false
+{%- call type_parameters() %}
+my_property:
+  type: {{ type_name }}
+  required: false
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
       type: MyType
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name],
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], parameter_section='properties',
           type_name=type_name)).assert_success()
 
 
@@ -187,16 +550,17 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    properties:
-      my_property:
-        type: {{ type_name }}
-        default: {{ value }}
+{%- call type_parameters() %}
+my_property:
+  type: {{ type_name }}
+  default: {{ value }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
       type: MyType
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], type_name=type_name,
-          value=value)).assert_success()
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], parameter_section='properties',
+          type_name=type_name, value=value)).assert_success()
 
 
 # Entry schema
@@ -218,10 +582,11 @@ data_types:
         default: default value
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: map
-        entry_schema: {{ values[0] }}
+{%- call type_parameters() %}
+my_parameter:
+  type: map
+  entry_schema: {{ values[0] }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -252,10 +617,11 @@ data_types:
         default: default value
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: map
-        entry_schema: {{ values[0] }}
+{%- call type_parameters() %}
+my_parameter:
+  type: map
+  entry_schema: {{ values[0] }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -266,7 +632,7 @@ my_parameter:
   key2: {{ values[2] }}
 {% endcall %}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], parameter_section=parameter_section,
-          values=values, import_profile=True)).assert_failure()
+          values=values), import_profile=True).assert_failure()
 
 
 @pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
@@ -281,10 +647,11 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: map
-        entry_schema: MyType
+{%- call type_parameters() %}
+my_parameter:
+  type: map
+  entry_schema: MyType
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -309,10 +676,11 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: map
-        entry_schema: MyType
+{%- call type_parameters() %}
+my_parameter:
+  type: map
+  entry_schema: MyType
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -342,10 +710,11 @@ data_types:
         default: default value
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: list
-        entry_schema: {{ values[0] }}
+{%- call type_parameters() %}
+my_parameter:
+  type: list
+  entry_schema: {{ values[0] }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -376,10 +745,11 @@ data_types:
         default: default value
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: list
-        entry_schema: {{ values[0] }}
+{%- call type_parameters() %}
+my_parameter:
+  type: list
+  entry_schema: {{ values[0] }}
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -405,10 +775,11 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: list
-        entry_schema: MyType
+{%- call type_parameters() %}
+my_parameter:
+  type: list
+  entry_schema: MyType
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -433,10 +804,11 @@ data_types:
         type: string
 {{ name }}_types:
   MyType:
-    {{ parameter_section }}:
-      my_parameter:
-        type: list
-        entry_schema: MyType
+{%- call type_parameters() %}
+my_parameter:
+  type: list
+  entry_schema: MyType
+{% endcall %}
 topology_template:
   {{ section }}:
     my_template:
@@ -458,9 +830,10 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 {{- additions() }}
 {{ name }}_types:
   類型:
-    {{ parameter_section }}:
-      參數:
-        type: string
+{%- call type_parameters() %}
+參數:
+  type: string
+{% endcall %}
 topology_template:
   {{ section }}:
     模板:

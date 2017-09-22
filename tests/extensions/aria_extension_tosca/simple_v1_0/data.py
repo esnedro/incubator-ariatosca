@@ -79,5 +79,5 @@ ENTRY_SCHEMA_VALUES_BAD = (
     ('string', 'a string', '1'),
     ('integer', '1', 'a string'),
     ('float', '1.1', 'a string'),
-    ('MyType', '{my_field1: a string}', 'a string')
+    ('MyType', '{my_field: a string}', 'a string')
 )
