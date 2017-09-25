@@ -135,7 +135,7 @@ def get_template_requirements(context, presentation):
 # Utils
 #
 
-def convert_requirement_from_definition_to_assignment(context, requirement_definition, # pylint: disable=too-many-branches
+def convert_requirement_from_definition_to_assignment(context, requirement_definition,              # pylint: disable=too-many-branches
                                                       our_requirement_assignment, container):
     from ..assignments import RequirementAssignment
 

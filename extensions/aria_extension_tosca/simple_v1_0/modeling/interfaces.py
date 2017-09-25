@@ -209,7 +209,7 @@ def convert_interface_definition_from_type_to_template(context, presentation, co
     return InterfaceAssignment(name=presentation._name, raw=raw, container=container)
 
 
-def convert_interface_definition_from_type_to_raw_template(context, presentation): # pylint: disable=invalid-name
+def convert_interface_definition_from_type_to_raw_template(context, presentation):                  # pylint: disable=invalid-name
     raw = OrderedDict()
 
     # Copy default values for inputs
@@ -236,7 +236,7 @@ def convert_interface_definition_from_type_to_raw_template(context, presentation
     return raw
 
 
-def convert_requirement_interface_definitions_from_type_to_raw_template(context, raw_requirement, # pylint: disable=invalid-name
+def convert_requirement_interface_definitions_from_type_to_raw_template(context, raw_requirement,   # pylint: disable=invalid-name
                                                                         interface_definitions):
     if not interface_definitions:
         return

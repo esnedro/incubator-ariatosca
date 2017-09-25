@@ -50,7 +50,7 @@ from ..data_types import coerce_value
 IMPLEMENTATION_PREFIX_REGEX = re.compile(r'(?<!\\)(?:\\\\)*>')
 
 
-def create_service_template_model(context): # pylint: disable=too-many-locals,too-many-branches
+def create_service_template_model(context):                                                         # pylint: disable=too-many-locals,too-many-branches
     model = ServiceTemplate(created_at=datetime.now(),
                             main_file_name=os.path.basename(str(context.presentation.location)))
 
@@ -652,7 +652,7 @@ def create_node_filter_constraints(context, node_filter, target_node_template_co
                     target_node_template_constraints.append(constraint)
 
 
-def create_constraint(context, node_filter, constraint_clause, property_name, capability_name): # pylint: disable=too-many-return-statements
+def create_constraint(context, node_filter, constraint_clause, property_name, capability_name):     # pylint: disable=too-many-return-statements
     constraint_key = constraint_clause._raw.keys()[0]
 
     the_type = constraint_clause._get_type(context)

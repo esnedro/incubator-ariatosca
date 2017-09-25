@@ -34,18 +34,18 @@ class Artifact(common.InstanceHandlerBase):
             out_stream.write(out_stream.node_style(self._model.name))
             out_stream.write(out_stream.meta_style(self._model.description))
             with out_stream.indent():
-                out_stream.write('Artifact type: {0}'.format(out_stream.type_style(
+                out_stream.write(u'Artifact type: {0}'.format(out_stream.type_style(
                     self._model.type.name)))
-                out_stream.write('Source path: {0}'.format(
+                out_stream.write(u'Source path: {0}'.format(
                     out_stream.literal_style(self._model.source_path)))
                 if self._model.target_path is not None:
-                    out_stream.write('Target path: {0}'.format(
+                    out_stream.write(u'Target path: {0}'.format(
                         out_stream.literal_style(self._model.target_path)))
                 if self._model.repository_url is not None:
-                    out_stream.write('Repository URL: {0}'.format(
+                    out_stream.write(u'Repository URL: {0}'.format(
                         out_stream.literal_style(self._model.repository_url)))
                 if self._model.repository_credential:
-                    out_stream.write('Repository credential: {0}'.format(
+                    out_stream.write(u'Repository credential: {0}'.format(
                         out_stream.literal_style(self._model.repository_credential)))
                 self._topology.dump(self._model.properties, out_stream, title='Properties')
 
@@ -60,11 +60,11 @@ class Capability(common.InstanceHandlerBase):
     def dump(self, out_stream):
         out_stream.write(out_stream.node_style(self._model.name))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
-            out_stream.write('Occurrences: {0:d} ({1:d}{2})'.format(
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Occurrences: {0:d} ({1:d}{2})'.format(
                 self._model.occurrences,
                 self._model.min_occurrences or 0,
-                ' to {0:d}'.format(self._model.max_occurrences)
+                u' to {0:d}'.format(self._model.max_occurrences)
                 if self._model.max_occurrences is not None
                 else ' or more'))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
@@ -81,9 +81,9 @@ class Group(common.ActorHandlerBase):
                        **kwargs)
 
     def dump(self, out_stream):
-        out_stream.write('Group: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Group: {0}'.format(out_stream.node_style(self._model.name)))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             self._topology.dump(self._model.interfaces, out_stream, title='Interfaces')
             if self._model.nodes:
@@ -111,7 +111,7 @@ class Interface(common.ActorHandlerBase):
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Interface type: {0}'.format(
+            out_stream.write(u'Interface type: {0}'.format(
                 out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.inputs, out_stream, title='Inputs')
             self._topology.dump(self._model.operations, out_stream, title='Operations')
@@ -146,10 +146,10 @@ class Node(common.ActorHandlerBase):
                        self._model.outbound_relationships)
 
     def dump(self, out_stream):
-        out_stream.write('Node: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Node: {0}'.format(out_stream.node_style(self._model.name)))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
-            out_stream.write('Template: {0}'.format(
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Template: {0}'.format(
                 out_stream.node_style(self._model.node_template.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             self._topology.dump(self._model.attributes, out_stream, title='Attributes')
@@ -359,28 +359,28 @@ class Operation(common.ActorHandlerBase):
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
             if self._model.implementation is not None:
-                out_stream.write('Implementation: {0}'.format(
+                out_stream.write(u'Implementation: {0}'.format(
                     out_stream.literal_style(self._model.implementation)))
             if self._model.dependencies:
                 out_stream.write(
-                    'Dependencies: {0}'.format(', '.join((str(out_stream.literal_style(v))
-                                                          for v in self._model.dependencies))))
+                    u'Dependencies: {0}'.format(u', '.join((str(out_stream.literal_style(v))
+                                                            for v in self._model.dependencies))))
             self._topology.dump(self._model.inputs, out_stream, title='Inputs')
             if self._model.executor is not None:
-                out_stream.write('Executor: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Executor: {0}'.format(out_stream.literal_style(
                     self._model.executor)))
             if self._model.max_attempts is not None:
-                out_stream.write('Max attempts: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Max attempts: {0}'.format(out_stream.literal_style(
                     self._model.max_attempts)))
             if self._model.retry_interval is not None:
-                out_stream.write('Retry interval: {0}'.format(
+                out_stream.write(u'Retry interval: {0}'.format(
                     out_stream.literal_style(self._model.retry_interval)))
             if self._model.plugin is not None:
-                out_stream.write('Plugin: {0}'.format(
+                out_stream.write(u'Plugin: {0}'.format(
                     out_stream.literal_style(self._model.plugin.name)))
             self._topology.dump(self._model.configurations, out_stream, title='Configuration')
             if self._model.function is not None:
-                out_stream.write('Function: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Function: {0}'.format(out_stream.literal_style(
                     self._model.function)))
             self._topology.dump(self._model.arguments, out_stream, title='Arguments')
 
@@ -431,9 +431,9 @@ class Policy(common.InstanceHandlerBase):
         self._topology.validate(self._model.properties, **kwargs)
 
     def dump(self, out_stream):
-        out_stream.write('Policy: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Policy: {0}'.format(out_stream.node_style(self._model.name)))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             if self._model.nodes:
                 out_stream.write('Target nodes:')
@@ -460,21 +460,21 @@ class Relationship(common.ActorHandlerBase):
 
     def dump(self, out_stream):
         if self._model.name:
-            out_stream.write('{0} ->'.format(out_stream.node_style(self._model.name)))
+            out_stream.write(u'{0} ->'.format(out_stream.node_style(self._model.name)))
         else:
             out_stream.write('->')
         with out_stream.indent():
-            out_stream.write('Node: {0}'.format(out_stream.node_style(
+            out_stream.write(u'Node: {0}'.format(out_stream.node_style(
                 self._model.target_node.name)))
             if self._model.target_capability:
-                out_stream.write('Capability: {0}'.format(out_stream.node_style(
+                out_stream.write(u'Capability: {0}'.format(out_stream.node_style(
                     self._model.target_capability.name)))
             if self._model.type is not None:
-                out_stream.write('Relationship type: {0}'.format(
+                out_stream.write(u'Relationship type: {0}'.format(
                     out_stream.type_style(self._model.type.name)))
             if (self._model.relationship_template is not None and
                     self._model.relationship_template.name):
-                out_stream.write('Relationship template: {0}'.format(
+                out_stream.write(u'Relationship template: {0}'.format(
                     out_stream.node_style(self._model.relationship_template.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             self._topology.dump(self._model.interfaces, out_stream, title='Interfaces')
@@ -549,7 +549,7 @@ class Substitution(common.InstanceHandlerBase):
     def dump(self, out_stream):
         out_stream.write('Substitution:')
         with out_stream.indent():
-            out_stream.write('Node type: {0}'.format(out_stream.type_style(
+            out_stream.write(u'Node type: {0}'.format(out_stream.type_style(
                 self._model.node_type.name)))
             self._topology.dump(self._model.mappings, out_stream, title='Mappings')
 
@@ -569,12 +569,12 @@ class SubstitutionMapping(common.InstanceHandlerBase):
 
     def dump(self, out_stream):
         if self._model.capability is not None:
-            out_stream.write('{0} -> {1}.{2}'.format(
+            out_stream.write(u'{0} -> {1}.{2}'.format(
                 out_stream.node_style(self._model.name),
                 out_stream.node_style(self._model.capability.node.name),
                 out_stream.node_style(self._model.capability.name)))
         else:
-            out_stream.write('{0} -> {1}.{2}'.format(
+            out_stream.write(u'{0} -> {1}.{2}'.format(
                 out_stream.node_style(self._model.name),
                 out_stream.node_style(self._model.node.name),
                 out_stream.node_style(self._model.requirement_template.name)))
@@ -583,7 +583,7 @@ class SubstitutionMapping(common.InstanceHandlerBase):
 class Metadata(common.InstanceHandlerBase):
 
     def dump(self, out_stream):
-        out_stream.write('{0}: {1}'.format(
+        out_stream.write(u'{0}: {1}'.format(
             out_stream.property_style(self._model.name),
             out_stream.literal_style(self._model.value)))
 
@@ -601,12 +601,12 @@ class _Parameter(common.InstanceHandlerBase):
 
     def dump(self, out_stream):
         if self._model.type_name is not None:
-            out_stream.write('{0}: {1} ({2})'.format(
+            out_stream.write(u'{0}: {1} ({2})'.format(
                 out_stream.property_style(self._model.name),
                 out_stream.literal_style(formatting.as_raw(self._model.value)),
                 out_stream.type_style(self._model.type_name)))
         else:
-            out_stream.write('{0}: {1}'.format(
+            out_stream.write(u'{0}: {1}'.format(
                 out_stream.property_style(self._model.name),
                 out_stream.literal_style(formatting.as_raw(self._model.value))))
         if self._model.description:

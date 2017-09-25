@@ -212,7 +212,7 @@ class DataType(ExtensiblePresentation):
             if not isinstance(parent, DataType):
                 return parent
             else:
-                return parent._get_primitive_ancestor(context) # pylint: disable=no-member
+                return parent._get_primitive_ancestor(context)                                      # pylint: disable=no-member
         return None
 
     @cachedmethod
@@ -428,7 +428,7 @@ class InterfaceType(ExtensiblePresentation):
     def _validate(self, context):
         super(InterfaceType, self)._validate(context)
         self._get_inputs(context)
-        for operation in self.operations.itervalues(): # pylint: disable=no-member
+        for operation in self.operations.itervalues():                                              # pylint: disable=no-member
             operation._validate(context)
 
     def _dump(self, context):

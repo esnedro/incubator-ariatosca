@@ -325,7 +325,7 @@ class InterfaceDefinition(ExtensiblePresentation):
     def _validate(self, context):
         super(InterfaceDefinition, self)._validate(context)
         if self.operations:
-            for operation in self.operations.itervalues(): # pylint: disable=no-member
+            for operation in self.operations.itervalues():                                          # pylint: disable=no-member
                 operation._validate(context)
 
 

@@ -253,6 +253,9 @@ class _Entry(object):
                 self.presentation._merge_import(entry.presentation)
 
     def cache(self):
+        if not self.merged:
+            raise RuntimeError(u'Only merged presentations can be cached: {0}'
+                               .format(self.canonical_location))
         PRESENTATION_CACHE[self.canonical_location] = self.presentation
 
 

@@ -151,18 +151,18 @@ class ArtifactTemplate(common.TemplateHandlerBase):
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Artifact type: {0}'.format(out_stream.type_style(
+            out_stream.write(u'Artifact type: {0}'.format(out_stream.type_style(
                 self._model.type.name)))
-            out_stream.write('Source path: {0}'.format(out_stream.literal_style(
+            out_stream.write(u'Source path: {0}'.format(out_stream.literal_style(
                 self._model.source_path)))
             if self._model.target_path is not None:
-                out_stream.write('Target path: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Target path: {0}'.format(out_stream.literal_style(
                     self._model.target_path)))
             if self._model.repository_url is not None:
-                out_stream.write('Repository URL: {0}'.format(
+                out_stream.write(u'Repository URL: {0}'.format(
                     out_stream.literal_style(self._model.repository_url)))
             if self._model.repository_credential:
-                out_stream.write('Repository credential: {0}'.format(
+                out_stream.write(u'Repository credential: {0}'.format(
                     out_stream.literal_style(self._model.repository_credential)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
 
@@ -190,17 +190,17 @@ class CapabilityTemplate(common.TemplateHandlerBase):
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             out_stream.write(
-                'Occurrences: {0:d}{1}'.format(
+                u'Occurrences: {0:d}{1}'.format(
                     self._model.min_occurrences or 0,
-                    ' to {0:d}'.format(self._model.max_occurrences)
+                    u' to {0:d}'.format(self._model.max_occurrences)
                     if self._model.max_occurrences is not None
                     else ' or more'))
             if self._model.valid_source_node_types:
-                out_stream.write('Valid source node types: {0}'.format(
-                    ', '.join((str(out_stream.type_style(v.name))
-                               for v in self._model.valid_source_node_types))))
+                out_stream.write(u'Valid source node types: {0}'.format(
+                    u', '.join((str(out_stream.type_style(v.name))
+                                for v in self._model.valid_source_node_types))))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
 
     def coerce(self, **kwargs):
@@ -229,19 +229,19 @@ class RequirementTemplate(common.TemplateHandlerBase):
             out_stream.write('Requirement:')
         with out_stream.indent():
             if self._model.target_node_type is not None:
-                out_stream.write('Target node type: {0}'.format(
+                out_stream.write(u'Target node type: {0}'.format(
                     out_stream.type_style(self._model.target_node_type.name)))
             elif self._model.target_node_template is not None:
-                out_stream.write('Target node template: {0}'.format(
+                out_stream.write(u'Target node template: {0}'.format(
                     out_stream.node_style(self._model.target_node_template.name)))
             if self._model.target_capability_type is not None:
-                out_stream.write('Target capability type: {0}'.format(
+                out_stream.write(u'Target capability type: {0}'.format(
                     out_stream.type_style(self._model.target_capability_type.name)))
             elif self._model.target_capability_name is not None:
-                out_stream.write('Target capability name: {0}'.format(
+                out_stream.write(u'Target capability name: {0}'.format(
                     out_stream.node_style(self._model.target_capability_name)))
             if self._model.target_node_template_constraints:
-                out_stream.write('Target node template constraints:')
+                out_stream.write(u'Target node template constraints:')
                 with out_stream.indent():
                     for constraint in self._model.target_node_template_constraints:
                         out_stream.write(out_stream.literal_style(constraint))
@@ -262,16 +262,16 @@ class RequirementTemplate(common.TemplateHandlerBase):
 
 class GroupTemplate(common.TemplateHandlerBase):
     def dump(self, out_stream):
-        out_stream.write('Group template: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Group template: {0}'.format(out_stream.node_style(self._model.name)))
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             self._topology.dump(self._model.interface_templates, out_stream,
                                 title='Interface Templates')
             if self._model.node_templates:
-                out_stream.write('Member node templates: {0}'.format(', '.join(
+                out_stream.write(u'Member node templates: {0}'.format(u', '.join(
                     (str(out_stream.node_style(v.name)) for v in self._model.node_templates))))
 
     def coerce(self, **kwargs):
@@ -304,7 +304,7 @@ class InterfaceTemplate(common.TemplateHandlerBase):
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Interface type: {0}'.format(out_stream.type_style(
+            out_stream.write(u'Interface type: {0}'.format(out_stream.type_style(
                 self._model.type.name)))
             self._topology.dump(self._model.inputs, out_stream, title='Inputs')
             self._topology.dump(self._model.operation_templates, out_stream,
@@ -333,11 +333,11 @@ class InterfaceTemplate(common.TemplateHandlerBase):
 
 class NodeTemplate(common.TemplateHandlerBase):
     def dump(self, out_stream):
-        out_stream.write('Node template: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Node template: {0}'.format(out_stream.node_style(self._model.name)))
         with out_stream.indent():
             if self._model.description:
                 out_stream.write(out_stream.meta_style(self._model.description))
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             self._topology.dump(self._model.attributes, out_stream, title='Attributes')
             self._topology.dump(
@@ -392,17 +392,17 @@ class NodeTemplate(common.TemplateHandlerBase):
 
 class PolicyTemplate(common.TemplateHandlerBase):
     def dump(self, out_stream):
-        out_stream.write('Policy template: {0}'.format(out_stream.node_style(self._model.name)))
+        out_stream.write(u'Policy template: {0}'.format(out_stream.node_style(self._model.name)))
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
-            out_stream.write('Type: {0}'.format(out_stream.type_style(self._model.type.name)))
+            out_stream.write(u'Type: {0}'.format(out_stream.type_style(self._model.type.name)))
             self._topology.dump(self._model.properties, out_stream, title='Properties')
             if self._model.node_templates:
-                out_stream.write('Target node templates: {0}'.format(', '.join(
+                out_stream.write(u'Target node templates: {0}'.format(u', '.join(
                     (str(out_stream.node_style(v.name)) for v in self._model.node_templates))))
             if self._model.group_templates:
-                out_stream.write('Target group templates: {0}'.format(', '.join(
+                out_stream.write(u'Target group templates: {0}'.format(u', '.join(
                     (str(out_stream.node_style(v.name)) for v in self._model.group_templates))))
 
     def coerce(self, **kwargs):
@@ -433,7 +433,7 @@ class SubstitutionTemplate(common.TemplateHandlerBase):
     def dump(self, out_stream):
         out_stream.write('Substitution template:')
         with out_stream.indent():
-            out_stream.write('Node type: {0}'.format(out_stream.type_style(
+            out_stream.write(u'Node type: {0}'.format(out_stream.type_style(
                 self._model.node_type.name)))
             self._topology.dump(self._model.mappings, out_stream, title='Mappings')
 
@@ -454,7 +454,7 @@ class SubstitutionTemplateMapping(common.TemplateHandlerBase):
             node_template = self._model.capability_template.node_template
         else:
             node_template = self._model.requirement_template.node_template
-        out_stream.write('{0} -> {1}.{2}'.format(
+        out_stream.write(u'{0} -> {1}.{2}'.format(
             out_stream.node_style(self._model.name),
             out_stream.node_style(node_template.name),
             out_stream.node_style(self._model.capability_template.name
@@ -503,10 +503,10 @@ class SubstitutionTemplateMapping(common.TemplateHandlerBase):
 class RelationshipTemplate(common.TemplateHandlerBase):
     def dump(self, out_stream):
         if self._model.type is not None:
-            out_stream.write('Relationship type: {0}'.format(out_stream.type_style(
+            out_stream.write(u'Relationship type: {0}'.format(out_stream.type_style(
                 self._model.type.name)))
         else:
-            out_stream.write('Relationship template: {0}'.format(
+            out_stream.write(u'Relationship template: {0}'.format(
                 out_stream.node_style(self._model.name)))
         if self._model.description:
             out_stream.write(out_stream.meta_style(self._model.description))
@@ -540,27 +540,27 @@ class OperationTemplate(common.TemplateHandlerBase):
             out_stream.write(out_stream.meta_style(self._model.description))
         with out_stream.indent():
             if self._model.implementation is not None:
-                out_stream.write('Implementation: {0}'.format(
+                out_stream.write(u'Implementation: {0}'.format(
                     out_stream.literal_style(self._model.implementation)))
             if self._model.dependencies:
-                out_stream.write('Dependencies: {0}'.format(', '.join(
+                out_stream.write(u'Dependencies: {0}'.format(u', '.join(
                     (str(out_stream.literal_style(v)) for v in self._model.dependencies))))
             self._topology.dump(self._model.inputs, out_stream, title='Inputs')
             if self._model.executor is not None:
-                out_stream.write('Executor: {0}'.format(
+                out_stream.write(u'Executor: {0}'.format(
                     out_stream.literal_style(self._model.executor)))
             if self._model.max_attempts is not None:
-                out_stream.write('Max attempts: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Max attempts: {0}'.format(out_stream.literal_style(
                     self._model.max_attempts)))
             if self._model.retry_interval is not None:
-                out_stream.write('Retry interval: {0}'.format(
+                out_stream.write(u'Retry interval: {0}'.format(
                     out_stream.literal_style(self._model.retry_interval)))
             if self._model.plugin_specification is not None:
-                out_stream.write('Plugin specification: {0}'.format(
+                out_stream.write(u'Plugin specification: {0}'.format(
                     out_stream.literal_style(self._model.plugin_specification.name)))
             self._topology.dump(self._model.configurations, out_stream, title='Configuration')
             if self._model.function is not None:
-                out_stream.write('Function: {0}'.format(out_stream.literal_style(
+                out_stream.write(u'Function: {0}'.format(out_stream.literal_style(
                     self._model.function)))
 
     def coerce(self, **kwargs):

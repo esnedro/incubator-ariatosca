@@ -91,7 +91,7 @@ class InputBase(ParameterMixin):
     """)
 
     @classmethod
-    def wrap(cls, name, value, description=None, required=True):  # pylint: disable=arguments-differ
+    def wrap(cls, name, value, description=None, required=True):                                    # pylint: disable=arguments-differ
         input = super(InputBase, cls).wrap(name, value, description)
         input.required = required
         return input

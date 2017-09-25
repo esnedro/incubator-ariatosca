@@ -15,7 +15,8 @@
 
 import pytest
 
-from tests.parser.service_templates import consume_literal
+from .service_templates import consume_literal
+
 from aria.modeling.utils import parameters_as_values
 
 

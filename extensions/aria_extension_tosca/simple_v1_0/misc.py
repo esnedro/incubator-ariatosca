@@ -49,7 +49,7 @@ class Description(AsIsPresentation):
     #DEFN_ELEMENT_DESCRIPTION>`__
     """
 
-    def __init__(self, name=None, raw=None, container=None, cls=None): # pylint: disable=unused-argument
+    def __init__(self, name=None, raw=None, container=None, cls=None):                              # pylint: disable=unused-argument
         super(Description, self).__init__(name, raw, container, cls=unicode)
 
     def _dump(self, context):

@@ -468,7 +468,7 @@ class Field(object):
             if value not in self.allowed:
                 raise InvalidValueError(u'{0} is not {1}'
                                         .format(self.full_name,
-                                                ' or '.join([safe_repr(v) for v in self.allowed])),
+                                                u' or '.join([safe_repr(v) for v in self.allowed])),
                                         locator=self.get_locator(raw))
 
         # Handle get according to variant

@@ -52,7 +52,7 @@ def get_inherited_constraints(context, presentation):
     return constraints
 
 
-def coerce_data_type_value(context, presentation, data_type, entry_schema, constraints, value, # pylint: disable=unused-argument
+def coerce_data_type_value(context, presentation, data_type, entry_schema, constraints, value,      # pylint: disable=unused-argument
                            aspect):
     """
     Handles the ``_coerce_data()`` hook for complex data types.
@@ -201,7 +201,7 @@ def get_property_constraints(context, presentation):
 # ConstraintClause
 #
 
-def apply_constraint_to_value(context, presentation, constraint_clause, value): # pylint: disable=too-many-statements,too-many-return-statements,too-many-branches
+def apply_constraint_to_value(context, presentation, constraint_clause, value):                     # pylint: disable=too-many-statements,too-many-return-statements,too-many-branches
     """
     Returns false if the value does not conform to the constraint.
     """
@@ -372,7 +372,7 @@ def get_data_type_name(the_type):
     return the_type._name if hasattr(the_type, '_name') else full_type_name(the_type)
 
 
-def coerce_value(context, presentation, the_type, entry_schema, constraints, value, aspect=None): # pylint: disable=too-many-return-statements
+def coerce_value(context, presentation, the_type, entry_schema, constraints, value, aspect=None):   # pylint: disable=too-many-return-statements
     """
     Returns the value after it's coerced to its type, reporting validation errors if it cannot be
     coerced.

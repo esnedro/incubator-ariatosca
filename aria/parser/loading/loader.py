@@ -33,5 +33,5 @@ class Loader(object):
     def load(self):
         raise NotImplementedError
 
-    def get_canonical_location(self): # pylint: disable=no-self-use
+    def get_canonical_location(self):                                                               # pylint: disable=no-self-use
         return None

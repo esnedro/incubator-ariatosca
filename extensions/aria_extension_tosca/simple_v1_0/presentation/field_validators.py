@@ -612,7 +612,7 @@ def node_filter_capabilities_validator(field, presentation, context):
     field.default_validate(presentation, context)
 
     values = getattr(presentation, field.name)
-    if values is not None: # pylint: disable=too-many-nested-blocks
+    if values is not None:                                                                          # pylint: disable=too-many-nested-blocks
         node_type = presentation._get_node_type(context)
         if node_type is not None:
             capabilities = node_type._get_capabilities(context)

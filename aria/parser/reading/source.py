@@ -31,7 +31,7 @@ class ReaderSource(object):
     """
 
     @staticmethod
-    def get_reader(context, location, loader):  # pylint: disable=unused-argument
+    def get_reader(context, location, loader):                                                      # pylint: disable=unused-argument
         raise ReaderNotFoundError(u'location: {0}'.format(location))
 
 

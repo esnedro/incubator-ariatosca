@@ -286,7 +286,7 @@ class GetAttribute(Function):
 # Operation
 #
 
-@implements_specification('4.6.1', 'tosca-simple-1.0') # pylint: disable=abstract-method
+@implements_specification('4.6.1', 'tosca-simple-1.0')                                              # pylint: disable=abstract-method
 class GetOperationOutput(Function):
     """
     The ``get_operation_output`` function is used to retrieve the values of variables exposed /
@@ -368,7 +368,7 @@ class GetNodesOfType(Function):
 # Artifact
 #
 
-@implements_specification('4.8.1', 'tosca-simple-1.0') # pylint: disable=abstract-method
+@implements_specification('4.8.1', 'tosca-simple-1.0')                                              # pylint: disable=abstract-method
 class GetArtifact(Function):
     """
     The ``get_artifact`` function is used to retrieve artifact location between modelable
@@ -422,7 +422,7 @@ def get_function(context, presentation, value):
     return False, None
 
 
-def parse_string_expression(context, presentation, name, index, explanation, value): # pylint: disable=unused-argument
+def parse_string_expression(context, presentation, name, index, explanation, value):                # pylint: disable=unused-argument
     is_function, func = get_function(context, presentation, value)
     if is_function:
         return func
@@ -431,7 +431,7 @@ def parse_string_expression(context, presentation, name, index, explanation, val
     return value
 
 
-def parse_int(context, presentation, name, index, explanation, value): # pylint: disable=unused-argument
+def parse_int(context, presentation, name, index, explanation, value):                              # pylint: disable=unused-argument
     if not isinstance(value, int):
         try:
             value = int(value)
@@ -441,7 +441,7 @@ def parse_int(context, presentation, name, index, explanation, value): # pylint:
     return value
 
 
-def parse_bool(context, presentation, name, index, explanation, value): # pylint: disable=unused-argument
+def parse_bool(context, presentation, name, index, explanation, value):                             # pylint: disable=unused-argument
     if not isinstance(value, bool):
         raise invalid_value(name, index, 'a boolean', explanation, value, presentation._locator)
     return value

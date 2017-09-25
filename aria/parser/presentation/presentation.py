@@ -115,7 +115,7 @@ class PresentationBase(HasCachedMethods):
         if names:
             obj = self._get(*names[:-1])
             if isinstance(obj, dict):
-                return obj.get(names[-1])  # pylint: disable=no-member
+                return obj.get(names[-1])                                                           # pylint: disable=no-member
         return None
 
     def _get_child_locator(self, *names):
@@ -159,7 +159,7 @@ class PresentationBase(HasCachedMethods):
             for field_name in field_names:
                 self._dump_field(context, field_name)
         elif hasattr(self, '_iter_field_names'):
-            for field_name in self._iter_field_names():  # pylint: disable=no-member
+            for field_name in self._iter_field_names():                                             # pylint: disable=no-member
                 self._dump_field(context, field_name)
         else:
             puts(context.style.literal_style(self._raw))
@@ -172,7 +172,7 @@ class PresentationBase(HasCachedMethods):
         delegate to their ``_dump`` methods.
         """
 
-        field = self.FIELDS[field_name]  # pylint: disable=no-member
+        field = self.FIELDS[field_name]                                                             # pylint: disable=no-member
         field.dump(self, context)
 
     def _clone(self, container=None):

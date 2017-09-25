@@ -81,7 +81,7 @@ class VersionString(unicode):
         return self.key.__hash__()
 
 
-def parse_version_string(version): # pylint: disable=too-many-branches
+def parse_version_string(version):                                                                  # pylint: disable=too-many-branches
     """
     Parses a version string.
 

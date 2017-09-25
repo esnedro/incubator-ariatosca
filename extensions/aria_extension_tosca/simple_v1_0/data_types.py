@@ -37,13 +37,13 @@ class Timezone(tzinfo):
         super(Timezone, self).__init__()
         self._offset = timedelta(hours=hours, minutes=minutes)
 
-    def utcoffset(self, dt): # pylint: disable=unused-argument
+    def utcoffset(self, dt):                                                                        # pylint: disable=unused-argument
         return self._offset
 
-    def tzname(self, dt): # pylint: disable=unused-argument
+    def tzname(self, dt):                                                                           # pylint: disable=unused-argument
         return unicode(self._offset)
 
-    def dst(self, dt): # pylint: disable=unused-argument
+    def dst(self, dt):                                                                              # pylint: disable=unused-argument
         return Timezone._ZERO
 
     _ZERO = timedelta(0)
@@ -74,7 +74,7 @@ class Timestamp(object):
         r'(([ \t]*)Z|(?P<tzhour>[-+][0-9][0-9])?(:(?P<tzminute>[0-9][0-9])?)?)?$'
     CANONICAL = '%Y-%m-%dT%H:%M:%S'
 
-    def __init__(self, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def __init__(self, entry_schema, constraints, value, aspect):                                   # pylint: disable=unused-argument
         value = unicode(value)
         match = re.match(Timestamp.REGULAR_SHORT, value)
         if match is not None:
@@ -174,7 +174,7 @@ class Version(object):
         """
         return (version.major, version.minor, version.fix, version.qualifier, version.build)
 
-    def __init__(self, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def __init__(self, entry_schema, constraints, value, aspect):                                   # pylint: disable=unused-argument
         str_value = unicode(value)
         match = re.match(Version.REGEX, str_value, flags=re.UNICODE)
         if match is None:
@@ -240,7 +240,7 @@ class Range(object):
     #TYPE_TOSCA_RANGE>`__
     """
 
-    def __init__(self, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def __init__(self, entry_schema, constraints, value, aspect):                                   # pylint: disable=unused-argument
         if not isinstance(value, list):
             raise ValueError(u'range value is not a list: {0}'.format(safe_repr(value)))
         if len(value) != 2:
@@ -291,7 +291,7 @@ class List(list):
     """
 
     @staticmethod
-    def _create(context, presentation, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def _create(context, presentation, entry_schema, constraints, value, aspect):                   # pylint: disable=unused-argument
         if not isinstance(value, list):
             raise ValueError(u'"list" data type value is not a list: {0}'.format(safe_repr(value)))
 
@@ -325,7 +325,7 @@ class Map(StrictDict):
     """
 
     @staticmethod
-    def _create(context, presentation, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def _create(context, presentation, entry_schema, constraints, value, aspect):                   # pylint: disable=unused-argument
         if not isinstance(value, dict):
             raise ValueError(u'"map" data type value is not a dict: {0}'.format(safe_repr(value)))
 
@@ -371,9 +371,9 @@ class Scalar(object):
         """
         return scalar.value
 
-    def __init__(self, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+    def __init__(self, entry_schema, constraints, value, aspect):                                   # pylint: disable=unused-argument
         str_value = unicode(value)
-        match = re.match(self.REGEX, str_value, flags=re.UNICODE) # pylint: disable=no-member
+        match = re.match(self.REGEX, str_value, flags=re.UNICODE)                                   # pylint: disable=no-member
         if match is None:
             raise ValueError(u'scalar must be formatted as <scalar> <unit>: {0}'
                              .format(safe_repr(value)))
@@ -386,7 +386,7 @@ class Scalar(object):
 
         unit_lower = self.unit.lower()
         unit_size = None
-        for k, v in self.UNITS.iteritems(): # pylint: disable=no-member
+        for k, v in self.UNITS.iteritems():                                                         # pylint: disable=no-member
             if k.lower() == unit_lower:
                 self.unit = k
                 unit_size = v
@@ -395,7 +395,7 @@ class Scalar(object):
             raise ValueError(u'scalar specified with unsupported unit: {0}'
                              .format(safe_repr(self.unit)))
 
-        self.value = self.TYPE(self.factor * unit_size) # pylint: disable=no-member
+        self.value = self.TYPE(self.factor * unit_size)                                             # pylint: disable=no-member
 
     @property
     def as_raw(self):
@@ -403,10 +403,10 @@ class Scalar(object):
             ('value', self.value),
             ('factor', self.factor),
             ('unit', self.unit),
-            ('unit_size', self.UNITS[self.unit]))) # pylint: disable=no-member
+            ('unit_size', self.UNITS[self.unit])))                                                  # pylint: disable=no-member
 
     def __str__(self):
-        return u'{0} {1}'.format(self.value, self.UNIT) # pylint: disable=no-member
+        return u'{0} {1}'.format(self.value, self.UNIT)                                             # pylint: disable=no-member
 
     def __repr__(self):
         return repr(self.__str__())
@@ -415,14 +415,14 @@ class Scalar(object):
         if isinstance(scalar, Scalar):
             value = scalar.value
         else:
-            value = self.TYPE(scalar) # pylint: disable=no-member
+            value = self.TYPE(scalar)                                                               # pylint: disable=no-member
         return self.value == value
 
     def __lt__(self, scalar):
         if isinstance(scalar, Scalar):
             value = scalar.value
         else:
-            value = self.TYPE(scalar) # pylint: disable=no-member
+            value = self.TYPE(scalar)                                                               # pylint: disable=no-member
         return self.value < value
 
 
@@ -508,12 +508,12 @@ class ScalarFrequency(Scalar):
 # The following are hooked in the YAML as 'coerce_value' extensions
 #
 
-def coerce_timestamp(context, presentation, the_type, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+def coerce_timestamp(context, presentation, the_type, entry_schema, constraints, value, aspect):    # pylint: disable=unused-argument
     return coerce_to_data_type_class(context, presentation, Timestamp, entry_schema, constraints,
                                      value, aspect)
 
 
-def coerce_version(context, presentation, the_type, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+def coerce_version(context, presentation, the_type, entry_schema, constraints, value, aspect):      # pylint: disable=unused-argument
     return coerce_to_data_type_class(context, presentation, Version, entry_schema, constraints,
                                      value, aspect)
 
@@ -532,23 +532,23 @@ def coerce_range(context, presentation, the_type, entry_schema, constraints, val
                                          value, aspect)
 
 
-def coerce_list(context, presentation, the_type, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+def coerce_list(context, presentation, the_type, entry_schema, constraints, value, aspect):         # pylint: disable=unused-argument
     return coerce_to_data_type_class(context, presentation, List, entry_schema, constraints,
                                      value, aspect)
 
 
-def coerce_map_value(context, presentation, the_type, entry_schema, constraints, value, aspect): # pylint: disable=unused-argument
+def coerce_map_value(context, presentation, the_type, entry_schema, constraints, value, aspect):    # pylint: disable=unused-argument
     return coerce_to_data_type_class(context, presentation, Map, entry_schema, constraints, value,
                                      aspect)
 
 
-def coerce_scalar_unit_size(context, presentation, the_type, entry_schema, constraints, value, # pylint: disable=unused-argument
+def coerce_scalar_unit_size(context, presentation, the_type, entry_schema, constraints, value,      # pylint: disable=unused-argument
                             aspect):
     return coerce_to_data_type_class(context, presentation, ScalarSize, entry_schema, constraints,
                                      value, aspect)
 
 
-def coerce_scalar_unit_time(context, presentation, the_type, entry_schema, constraints, value, # pylint: disable=unused-argument
+def coerce_scalar_unit_time(context, presentation, the_type, entry_schema, constraints, value,      # pylint: disable=unused-argument
                             aspect):
     return coerce_to_data_type_class(context, presentation, ScalarTime, entry_schema, constraints,
                                      value, aspect)

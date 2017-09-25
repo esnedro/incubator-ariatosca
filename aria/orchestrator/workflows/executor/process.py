@@ -201,11 +201,11 @@ class ProcessExecutor(base.BaseExecutor):
                         break
                     request_handler = self._request_handlers.get(request_type)
                     if not request_handler:
-                        raise RuntimeError('Invalid request type: {0}'.format(request_type))
+                        raise RuntimeError(u'Invalid request type: {0}'.format(request_type))
                     task_id = request['task_id']
                     request_handler(task_id=task_id, request=request, response=response)
             except BaseException as e:
-                self.logger.debug('Error in process executor listener: {0}'.format(e))
+                self.logger.debug(u'Error in process executor listener: {0}'.format(e))
 
     @contextlib.contextmanager
     def _accept_request(self):

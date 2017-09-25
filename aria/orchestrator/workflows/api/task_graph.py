@@ -52,7 +52,7 @@ class TaskGraph(object):
         self._graph = DiGraph()
 
     def __repr__(self):
-        return '{name}(id={self._id}, name={self.name}, graph={self._graph!r})'.format(
+        return u'{name}(id={self._id}, name={self.name}, graph={self._graph!r})'.format(            # pylint: disable=redundant-keyword-arg
             name=self.__class__.__name__, self=self)
 
     @property
@@ -91,7 +91,7 @@ class TaskGraph(object):
          ``dependent_task`` is not in the graph
         """
         if not self.has_tasks(dependent_task):
-            raise TaskNotInGraphError('Task id: {0}'.format(dependent_task.id))
+            raise TaskNotInGraphError(u'Task id: {0}'.format(dependent_task.id))
         for _, dependency_id in self._graph.out_edges_iter(dependent_task.id):
             yield self.get_task(dependency_id)
 
@@ -104,7 +104,7 @@ class TaskGraph(object):
          ``dependency_task`` is not in the graph
         """
         if not self.has_tasks(dependency_task):
-            raise TaskNotInGraphError('Task id: {0}'.format(dependency_task.id))
+            raise TaskNotInGraphError(u'Task id: {0}'.format(dependency_task.id))
         for dependent_id, _ in self._graph.in_edges_iter(dependency_task.id):
             yield self.get_task(dependent_id)
 
@@ -119,7 +119,7 @@ class TaskGraph(object):
          the graph with the given ID
         """
         if not self._graph.has_node(task_id):
-            raise TaskNotInGraphError('Task id: {0}'.format(task_id))
+            raise TaskNotInGraphError(u'Task id: {0}'.format(task_id))
         data = self._graph.node[task_id]
         return data['task']
 
