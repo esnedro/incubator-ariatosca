@@ -15,6 +15,7 @@
 
 
 from .source import DefaultPresenterSource
+from ...utils.threading import (BlockingExecutor, FixedThreadPoolExecutor)
 
 
 class PresentationContext(object):
@@ -66,3 +67,12 @@ class PresentationContext(object):
         """
 
         return self.presenter._get_from_dict(*names) if self.presenter is not None else None
+
+    def create_executor(self):
+        if self.threads == 1:
+            # BlockingExecutor is much faster for the single-threaded case
+            return BlockingExecutor(print_exceptions=self.print_exceptions)
+
+        return FixedThreadPoolExecutor(size=self.threads,
+                                       timeout=self.timeout,
+                                       print_exceptions=self.print_exceptions)
