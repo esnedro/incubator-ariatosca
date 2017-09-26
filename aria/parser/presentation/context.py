@@ -32,6 +32,8 @@ class PresentationContext(object):
     :vartype presenter_class: type
     :ivar import_profile: whether to import the profile by default (defaults to ``True``)
     :vartype import_profile: bool
+    :ivar validate_normative: whether to validate normative types (defaults to ``True``)
+    :vartype validate_normative: bool
     :ivar cache: whether to cache presentations (defaults to ``True``)
     :vartype cache: bool
     :ivar threads: number of threads to use when reading data (defaults to 8)
@@ -48,6 +50,7 @@ class PresentationContext(object):
         self.presenter_source = DefaultPresenterSource()
         self.presenter_class = None  # overrides
         self.import_profile = True
+        self.validate_normative = True
         self.cache = True
         self.threads = 8  # reasonable default for networking multithreading
         self.timeout = 10  # in seconds

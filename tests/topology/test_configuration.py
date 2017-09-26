@@ -15,9 +15,9 @@
 
 import pytest
 
-from .service_templates import consume_literal
-
 from aria.modeling.utils import parameters_as_values
+
+from .service_templates import consume_literal
 
 
 TEMPLATE = """

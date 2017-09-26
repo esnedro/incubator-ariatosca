@@ -17,9 +17,6 @@
 
 # Keywords
 
-TYPE_NAMES_NO_UNSUPPORTED_FIELDS = ('artifact', 'data', 'capability', 'relationship', 'node',
-                                    'group', 'policy')
-TYPE_NAMES = TYPE_NAMES_NO_UNSUPPORTED_FIELDS + ('interface',)
 TYPE_NAME_PLURAL = {
     'artifact': 'artifacts',
     'data': 'datatypes',
@@ -30,19 +27,19 @@ TYPE_NAME_PLURAL = {
     'group': 'groups',
     'policy': 'policies'
 }
-PRIMITIVE_TYPE_NAMES = ('string', 'integer', 'float', 'boolean')
-PARAMETER_SECTION_NAMES = ('properties', 'attributes')
-TEMPLATE_NAMES = ('node', 'group', 'relationship', 'policy')
 TEMPLATE_NAME_SECTIONS = {
     'node': 'node_templates',
     'group': 'groups',
     'relationship': 'relationship_templates',
     'policy': 'policies'
 }
+PRIMITIVE_TYPE_NAMES = ('string', 'integer', 'float', 'boolean')
+PARAMETER_TYPE_NAMES = PRIMITIVE_TYPE_NAMES + ('MyType',)
 CONSTRAINTS_WITH_VALUE = ('equal', 'greater_than', 'greater_or_equal', 'less_than', 'less_or_equal')
 CONSTRAINTS_WITH_VALUE_LIST = ('valid_values',)
 CONSTRAINTS_WITH_VALUE_RANGE = ('in_range',)
 CONSTRAINTS_WITH_NON_NEGATIVE_INT = ('length', 'min_length', 'max_length')
+
 
 # Values
 
@@ -62,7 +59,6 @@ BAD_OCCURRENCES = NOT_A_RANGE + ('[ -1, 1 ]', '[ 0, unbounded ]')
 GOOD_VERSIONS = ("'6.1'", '2.0.1', '3.1.0.beta', "'1.0.0.alpha-10'")
 BAD_VERSIONS = ('a_string', '1.2.3.4.5', '1.2.beta', '1.0.0.alpha-x')
 STATUSES = ('supported', 'unsupported', 'experimental', 'deprecated')
-PARAMETER_TYPE_NAMES = PRIMITIVE_TYPE_NAMES + ('MyType',)
 PARAMETER_VALUES = (
     ('string', 'a string'),
     ('integer', '1'),

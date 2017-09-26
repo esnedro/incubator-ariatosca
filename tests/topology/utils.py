@@ -40,6 +40,7 @@ def create_context(uri,
     context.presentation.presenter_source = import_fullname(presenter_source)()
     context.presentation.presenter_class = import_fullname(presenter)
     context.presentation.threads = 1 # tests already run in maximum thread density
+    context.presentation.validate_normative = False # we have special tests for normative types
     context.presentation.print_exceptions = debug
     return context
 

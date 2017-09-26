@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,17 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-group_types:
 
-  tosca.groups.Root:
-    _extensions:
-      normative: true
-      shorthand_name: Root # ARIA NOTE: omitted in the spec
-      type_qualified_name: tosca:Root
-      specification: tosca-simple-1.0
-      specification_section: 5.9.1
-    description: >-
-      This is the default (root) TOSCA Group Type definition that all other TOSCA base Group Types derive from.
-    interfaces:
-      Standard:
-        type: tosca.interfaces.node.lifecycle.Standard
+# TODO: both general and in requirements

@@ -19,6 +19,9 @@ import pytest
 from ... import data
 
 
+PARAMETER_SECTION_NAMES = ('properties', 'attributes')
+
+
 # Capabilities section
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)
@@ -283,8 +286,7 @@ node_types:
 
 # Unicode
 
-@pytest.mark.parametrize('parameter_section', data.PARAMETER_SECTION_NAMES)
-def test_node_type_capability_unicode(parser, parameter_section):
+def test_node_type_capability_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 capability_types:
@@ -294,10 +296,11 @@ node_types:
     capabilities:
       能力:
         type: 類型
-        {{ parameter_section }}:
+        properties:
           參數:
             type: string
             description: 描述
             default: 值
             status: supported
-""", dict(parameter_section=parameter_section)).assert_success()
+        valid_source_types: [ 類型 ]
+""").assert_success()

@@ -391,6 +391,9 @@ class ArtifactAssignmentForType(ExtensiblePresentation):
     Template and used by orchestration engine to facilitate deployment and implementation of
     interface operations.
 
+    ARIA NOTE: section 3.5.6.2.1 in the spec refers to a short notation for "file", but that
+    notation would be impossible because the "type" field is required.
+
     See the `TOSCA Simple Profile v1.0 cos01 specification <http://docs.oasis-open.org/tosca
     /TOSCA-Simple-Profile-YAML/v1.0/cos01/TOSCA-Simple-Profile-YAML-v1.0-cos01.html
     #DEFN_ENTITY_ARTIFACT_DEF>`__

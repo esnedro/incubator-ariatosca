@@ -199,6 +199,8 @@ class Presentation(PresentationBase):
     """
 
     def _validate(self, context):
+        if (not context.presentation.validate_normative) and self._get_extension('normative'):
+            return
         validate_no_short_form(context, self)
         validate_no_unknown_fields(context, self)
         validate_known_fields(context, self)

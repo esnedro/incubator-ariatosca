@@ -29,8 +29,9 @@ from . import (Parser, Parsed)
 
 
 class AriaParser(Parser):
-    def _parse_literal(self, text, import_profile):
-        context = AriaParser.create_context(import_profile=import_profile)
+    def _parse_literal(self, text, import_profile, validate_normative):
+        context = AriaParser.create_context(import_profile=import_profile,
+                                            validate_normative=validate_normative)
         context.presentation.location = LiteralLocation(text)
         consumer = AriaParser.create_consumer(context)
         consumer.consume()
@@ -47,7 +48,8 @@ class AriaParser(Parser):
                        presenter=None,
                        debug=False,
                        cache=True,
-                       import_profile=True):
+                       import_profile=True,
+                       validate_normative=True):
         context = ConsumptionContext()
         context.loading.loader_source = import_fullname(loader_source)()
         context.reading.reader_source = import_fullname(reader_source)()
@@ -56,6 +58,7 @@ class AriaParser(Parser):
         context.presentation.threads = 1 # tests already run in maximum thread density
         context.presentation.cache = cache
         context.presentation.import_profile = import_profile
+        context.presentation.validate_normative = validate_normative
         context.presentation.print_exceptions = debug
         return context
 

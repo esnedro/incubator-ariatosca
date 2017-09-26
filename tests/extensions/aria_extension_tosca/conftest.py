@@ -21,7 +21,7 @@ Add support for a "--tosca-parser" CLI option.
 
 import pytest
 
-from ....mechanisms.parsing.aria import AriaParser
+from ...mechanisms.parsing.aria import AriaParser
 
 
 def pytest_addoption(parser):

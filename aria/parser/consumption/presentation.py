@@ -45,15 +45,16 @@ class Read(Consumer):
         self._cache = {}
 
     def consume(self):
-        main, entries = self._present_all()
+        # Present the main location and all imports recursively
+        main, results = self._present_all()
 
         # Merge presentations
-        main.merge(entries, self.context)
+        main.merge(results, self.context)
 
         # Cache merged presentations
         if self.context.presentation.cache:
-            for presentation in entries:
-                presentation.cache()
+            for result in results:
+                result.cache()
 
         self.context.presentation.presenter = main.presentation
         if main.canonical_location is not None:
@@ -80,25 +81,28 @@ class Read(Consumer):
         location = self.context.presentation.location
 
         if location is None:
-            self.context.validation.report('Presentation consumer: missing location')
+            self.context.validation.report('Read consumer: missing location')
             return
 
         executor = self.context.presentation.create_executor()
         try:
+            # This call may recursively submit tasks to the executor if there are imports
             main = self._present(location, None, None, executor)
+
+            # Wait for all tasks to complete
             executor.drain()
 
             # Handle exceptions
             for e in executor.exceptions:
                 self._handle_exception(e)
 
-            entries = executor.returns or []
+            results = executor.returns or []
         finally:
             executor.close()
 
-        entries.insert(0, main)
+        results.insert(0, main)
 
-        return main, entries
+        return main, results
 
     def _present(self, location, origin_canonical_location, origin_presenter_class, executor):
         # Link the context to this thread
@@ -120,20 +124,19 @@ class Read(Consumer):
             # Is the presentation in the global cache?
             try:
                 presentation = PRESENTATION_CACHE[canonical_location]
-                return _Entry(presentation, canonical_location, origin_canonical_location)
+                return _Result(presentation, canonical_location, origin_canonical_location)
             except KeyError:
                 pass
 
         try:
             # Is the presentation in the local cache?
             presentation = self._cache[canonical_location]
-            return _Entry(presentation, canonical_location, origin_canonical_location)
+            return _Result(presentation, canonical_location, origin_canonical_location)
         except KeyError:
             pass
 
         # Create and cache new presentation
-        presentation = self._create_presentation(canonical_location, loader,
-                                                 origin_presenter_class)
+        presentation = self._create_presentation(canonical_location, loader, origin_presenter_class)
         self._cache[canonical_location] = presentation
 
         # Submit imports to executor
@@ -145,7 +148,7 @@ class Read(Consumer):
                     executor.submit(self._present, import_location, canonical_location,
                                     presentation.__class__, executor)
 
-        return _Entry(presentation, canonical_location, origin_canonical_location)
+        return _Result(presentation, canonical_location, origin_canonical_location)
 
     def _create_loader(self, location, origin_canonical_location):
         loader = self.context.loading.loader_source.get_loader(self.context.loading, location,
@@ -153,21 +156,21 @@ class Read(Consumer):
 
         canonical_location = None
 
-        # Because retrieving the canonical location can be costly, we will cache it
-        cache_key = None
         if origin_canonical_location is not None:
             cache_key = (origin_canonical_location, location)
-
-        if cache_key is not None:
             try:
                 canonical_location = CANONICAL_LOCATION_CACHE[cache_key]
+                return loader, canonical_location
             except KeyError:
                 pass
+        else:
+            cache_key = None
 
-        if canonical_location is None:
-            canonical_location = loader.get_canonical_location()
-            if cache_key is not None:
-                CANONICAL_LOCATION_CACHE[cache_key] = canonical_location
+        canonical_location = loader.get_canonical_location()
+
+        # Because retrieving the canonical location can be costly, we will try to cache it
+        if cache_key is not None:
+            CANONICAL_LOCATION_CACHE[cache_key] = canonical_location
 
         return loader, canonical_location
 
@@ -206,51 +209,50 @@ class Read(Consumer):
         return presentation
 
 
-class _Entry(object):
+class _Result(object):
     def __init__(self, presentation, canonical_location, origin_canonical_location):
         self.presentation = presentation
         self.canonical_location = canonical_location
         self.origin_canonical_location = origin_canonical_location
         self.merged = False
 
-    def get_imports(self, entries):
+    def get_imports(self, results):
         imports = []
 
-        def has_import(entry):
+        def has_import(result):
             for i in imports:
-                if i.canonical_location == entry.canonical_location:
+                if i.canonical_location == result.canonical_location:
                     return True
             return False
 
-        for entry in entries:
-            if entry.origin_canonical_location == self.canonical_location:
-                if not has_import(entry):
-                    imports.append(entry)
+        for result in results:
+            if result.origin_canonical_location == self.canonical_location:
+                if not has_import(result):
+                    imports.append(result)
         return imports
 
-    def merge(self, entries, context):
+    def merge(self, results, context):
         # Make sure to only merge each presentation once
         if self.merged:
             return
         self.merged = True
-        for entry in entries:
-            if entry.presentation == self.presentation:
-                entry.merged = True
+        for result in results:
+            if result.presentation == self.presentation:
+                result.merged = True
 
-        for entry in self.get_imports(entries):
+        for result in self.get_imports(results):
             # Make sure import is merged
-            entry.merge(entries, context)
+            result.merge(results, context)
 
             # Validate import
             if hasattr(self.presentation, '_validate_import'):
-                # _validate_import will report an issue if invalid
-                valid = self.presentation._validate_import(context, entry.presentation)
-            else:
-                valid = True
+                if not self.presentation._validate_import(context, result.presentation):
+                    # _validate_import will report an issue if invalid
+                    continue
 
             # Merge import
-            if valid and hasattr(self.presentation, '_merge_import'):
-                self.presentation._merge_import(entry.presentation)
+            if hasattr(self.presentation, '_merge_import'):
+                self.presentation._merge_import(result.presentation)
 
     def cache(self):
         if not self.merged:
