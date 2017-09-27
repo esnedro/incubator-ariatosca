@@ -345,7 +345,7 @@ class Map(StrictDict):
         return the_map
 
     def __init__(self, items=None):
-        super(Map, self).__init__(items, key_class=str)
+        super(Map, self).__init__(items, key_class=basestring)
 
     # Can't define as property because it's old-style Python class
     def as_raw(self):

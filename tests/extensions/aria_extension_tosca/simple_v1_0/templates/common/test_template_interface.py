@@ -621,32 +621,6 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
-def test_template_interface_operation_implementation_short_form(parser, macros, name):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-interface_types:
-  MyType: {}
-{{ name }}_types:
-  MyType:
-{%- call type_interfaces() %}
-MyInterface:
-  type: MyType
-  my_operation: {}
-{% endcall %}
-topology_template:
-  {{ section }}:
-    my_template:
-      type: MyType
-{%- call interfaces() %}
-MyInterface:
-  my_operation:
-    implementation: an implementation
-{% endcall %}
-""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
-
-
 @pytest.mark.parametrize('macros,name,value', matrix(
     INTERFACE_SECTIONS,
     data.NOT_A_STRING,
@@ -677,6 +651,32 @@ MyInterface:
       primary: {{ value }}
 {% endcall %}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
+
+
+@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+def test_template_interface_operation_implementation_primary_short_form(parser, macros, name):
+    parser.parse_literal(MACROS[macros] + """
+tosca_definitions_version: tosca_simple_yaml_1_0
+{{- additions() }}
+interface_types:
+  MyType: {}
+{{ name }}_types:
+  MyType:
+{%- call type_interfaces() %}
+MyInterface:
+  type: MyType
+  my_operation: {}
+{% endcall %}
+topology_template:
+  {{ section }}:
+    my_template:
+      type: MyType
+{%- call interfaces() %}
+MyInterface:
+  my_operation:
+    implementation: an implementation
+{% endcall %}
+""", dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(

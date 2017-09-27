@@ -15,8 +15,28 @@
 # limitations under the License.
 
 
-def test_service_template_syntax_unsupported(parser):
+def test_dsl_definitions_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
-unsupported: {}
-""").assert_failure()
+dsl_definitions: {}
+""").assert_success()
+
+
+def test_dsl_definitions(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+dsl_definitions:
+  dsl_definition: &ANCHOR
+    field: a value
+""").assert_success()
+
+
+# Unicode
+
+def test_dsl_definitions_unicode(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+dsl_definitions:
+  定義: &ANCHOR # YAML does not allow the anchor name to be Unicode
+    領域: 值
+""").assert_success()

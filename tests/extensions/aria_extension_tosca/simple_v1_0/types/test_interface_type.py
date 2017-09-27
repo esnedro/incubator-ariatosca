@@ -55,32 +55,8 @@ interface_types:
 
 # Operation implementation
 
-def test_interface_type_operation_implementation_short_form(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-interface_types:
-  MyType:
-    my_operation:
-      implementation: an implementation
-""").assert_success()
-
-
-def test_interface_type_operation_implementation_long_form(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-interface_types:
-  MyType:
-    my_operation:
-      implementation:
-        primary: an implementation
-        dependencies:
-          - a dependency
-          - another dependency
-""").assert_success()
-
-
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_interface_type_operation_implementation_syntax_type(parser, value):
+def test_interface_type_operation_implementation_primary_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 interface_types:
@@ -89,6 +65,27 @@ interface_types:
       implementation:
         primary: {{ value }}
 """, dict(value=value)).assert_failure()
+
+
+def test_interface_type_operation_implementation_primary(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  MyType:
+    my_operation:
+      implementation:
+        primary: an implementation
+""").assert_success()
+
+
+def test_interface_type_operation_implementation_primary_short_form(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+interface_types:
+  MyType:
+    my_operation:
+      implementation: an implementation
+""").assert_success()
 
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)

@@ -138,6 +138,10 @@ class Repository(ExtensiblePresentation):
     def _get_credential(self, context):
         return get_data_type_value(context, self, 'credential', 'tosca.datatypes.Credential')
 
+    def _validate(self, context):
+        super(Repository, self)._validate(context)
+        self._get_credential(context)
+
 
 @short_form_field('file')
 @has_fields

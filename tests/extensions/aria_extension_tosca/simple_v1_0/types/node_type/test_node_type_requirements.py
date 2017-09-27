@@ -105,18 +105,6 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_requirement_capability_short_form(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-node_types:
-  MyType:
-    requirements:
-      - my_requirement: MyType
-""").assert_success()
-
-
 # Capability type
 
 def test_node_type_requirement_capability_type_unknown(parser):
@@ -128,6 +116,18 @@ node_types:
       - my_requirement:
           capability: UnknownType
 """).assert_failure()
+
+
+def test_node_type_requirement_capability_type_short_form(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement: MyType
+""").assert_success()
 
 
 def test_node_type_requirement_capability_type_override(parser):
@@ -234,22 +234,6 @@ node_types:
 """).assert_failure()
 
 
-def test_node_type_requirement_relationship_short_form(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-capability_types:
-  MyType: {}
-relationship_types:
-  MyType: {}
-node_types:
-  MyType:
-    requirements:
-      - my_requirement:
-          capability: MyType
-          relationship: MyType
-""").assert_success()
-
-
 # Relationship type
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
@@ -281,6 +265,22 @@ node_types:
           relationship:
             type: UnknownType
 """).assert_failure()
+
+
+def test_node_type_requirement_relationship_type_short_form(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+capability_types:
+  MyType: {}
+relationship_types:
+  MyType: {}
+node_types:
+  MyType:
+    requirements:
+      - my_requirement:
+          capability: MyType
+          relationship: MyType
+""").assert_success()
 
 
 def test_node_type_requirement_relationship_type_override(parser):

@@ -59,14 +59,6 @@ imports: {{ value }}
 """, dict(value=value)).assert_failure()
 
 
-def test_imports_section_syntax_unsupported(parser):
-    parser.parse_literal("""
-tosca_definitions_version: tosca_simple_yaml_1_0
-imports:
-  unsupported: {}
-""").assert_failure()
-
-
 def test_imports_section_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -74,9 +66,45 @@ imports: []
 """).assert_success()
 
 
-# Variants
+# Import
 
-def test_imports_short_form(parser, repository):
+@pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
+def test_import_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  - {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_import_syntax_unsupported(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  - unsupported: {}
+""").assert_failure()
+
+
+def test_import_syntax_empty(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  - {} # "file" is required
+""").assert_failure()
+
+
+# File
+
+@pytest.mark.parametrize('value', data.NOT_A_DICT_OR_STRING)
+def test_import_file_syntax_type(parser, value):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+imports:
+  - file: {{ value }}
+""", dict(value=value)).assert_failure()
+
+
+def test_import_file_short_form(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -88,7 +116,7 @@ topology_template:
 """, dict(repository=repository)).assert_success()
 
 
-def test_imports_long_form(parser, repository):
+def test_import_file(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -100,16 +128,18 @@ topology_template:
 """, dict(repository=repository)).assert_success()
 
 
+# Repository
+
 @pytest.mark.skip(reason='not yet supported')
-def test_imports_repository(parser, repository):
+def test_import_repository(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 repositories:
-  myrepository:
+  my_repository:
     url: {{ repository }}/imports/
 imports:
   - file: node-type.yaml
-    repository: myrepository
+    repository: my_repository
 topology_template:
   node_templates:
     my_node:
@@ -117,8 +147,10 @@ topology_template:
 """, dict(repository=repository)).assert_success()
 
 
+# Namespace
+
 @pytest.mark.skip(reason='not yet supported')
-def test_imports_namespace(parser, repository):
+def test_import_namespace(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -134,7 +166,7 @@ topology_template:
 
 # Bad imports
 
-def test_imports_not_found(parser):
+def test_import_not_found(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -142,7 +174,7 @@ imports:
 """).assert_failure()
 
 
-def test_imports_bad(parser, repository):
+def test_import_bad(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
@@ -156,13 +188,13 @@ topology_template:
 
 # Unicode
 
-def test_imports_unicode(parser, repository):
+def test_import_unicode(parser, repository):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 imports:
   - {{ repository }}/imports/節點類型.yaml
 topology_template:
   node_templates:
-    my_node:
+    模板:
       type: 類型
 """, dict(repository=repository)).assert_success()

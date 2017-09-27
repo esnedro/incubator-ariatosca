@@ -60,3 +60,15 @@ artifact_types:
   MyType:
     file_ext: []
 """).assert_success()
+
+
+# Unicode
+
+
+def test_artifact_type_unicode(parser):
+    parser.parse_literal("""
+tosca_definitions_version: tosca_simple_yaml_1_0
+artifact_types:
+  類型:
+    file_ext: [ 延期一, 延期二 ]
+""").assert_success()
