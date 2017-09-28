@@ -14,12 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Unified testing for properties, attributes, and inputs.
+
+Additional tests for properties are in test_template_properties.py.
+"""
+
 import pytest
 
 from ... import data
 from ......mechanisms.utils import matrix
 
 
+# Assigning to parameters defined at a type
 MAIN_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -31,6 +38,7 @@ MAIN_MACROS = """
 {%- endmacro %}
 """
 
+# Assigning to parameters defined at a capability type
 CAPABILITY_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -49,6 +57,7 @@ capability_types:
 {%- endmacro %}
 """
 
+# Assigning to parameters defined at an artifact type
 ARTIFACT_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -66,6 +75,7 @@ artifact_types:
 {%- endmacro %}
 """
 
+# Assigning to inputs defined at an interface type
 INTERFACE_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -84,6 +94,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Assigning to inputs defined at an operation of an interface type
 OPERATION_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -104,6 +115,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Assigning to inputs defined (added/overriden) at an interface of the template's type
 LOCAL_INTERFACE_MACROS = """
 {% macro additions() %}
 interface_types:
@@ -122,6 +134,8 @@ interface_types:
 {%- endmacro %}
 """
 
+# Assigning to inputs defined (added/overriden) at an operation of an interface of the template's
+# type
 LOCAL_OPERATION_MACROS = """
 {% macro additions() %}
 interface_types:
@@ -142,6 +156,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to parameters defined at a relationship type
 RELATIONSHIP_TYPE_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -167,36 +182,7 @@ relationship_types:
 {%- endmacro %}
 """
 
-RELATIONSHIP_LOCAL_INTERFACE_MACROS = """
-{% macro additions() %}
-capability_types:
-  MyType: {}
-relationship_types:
-  MyType: {}
-interface_types:
-  MyType: {}
-{%- endmacro %}
-{% macro type_parameters() %}
-    requirements:
-      - my_requirement:
-          capability: MyType
-          relationship:
-            type: MyType
-            interfaces:
-              MyInterface:
-                type: MyType
-                {{ parameter_section }}: {{ caller()|indent(18) }}
-{%- endmacro %}
-{% macro parameters() %}
-      requirements:
-        - my_requirement:
-            relationship:
-              interfaces:
-                MyInterface:
-                  {{ parameter_section }}: {{ caller()|indent(20) }}
-{%- endmacro %}
-"""
-
+# At a relationship of a node template, assigning to inputs defined at an interface type
 RELATIONSHIP_INTERFACE_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -227,6 +213,8 @@ interface_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to inputs defined at an operation of an interface
+# type
 RELATIONSHIP_OPERATION_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -259,6 +247,8 @@ interface_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to inputs defined (added/overriden) at an
+# interface of a relationship type
 RELATIONSHIP_TYPE_INTERFACE_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -289,6 +279,8 @@ relationship_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to inputs defined (added/overriden) at an
+# operation of an interface of a relationship type
 RELATIONSHIP_TYPE_OPERATION_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -321,6 +313,8 @@ relationship_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to inputs defined (added/overriden) at an
+# interface of the relationship of the node type
 RELATIONSHIP_LOCAL_INTERFACE_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -351,6 +345,8 @@ interface_types:
 {%- endmacro %}
 """
 
+# At a relationship of a node template, assigning to inputs defined (added/overriden) at an
+# operation of an interface of the relationship of the node type
 RELATIONSHIP_LOCAL_OPERATION_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -400,7 +396,7 @@ MACROS = {
     'relationship-local-operation': RELATIONSHIP_LOCAL_OPERATION_MACROS
 }
 
-PARAMETER_SECTIONS = (
+CASES = (
     ('main', 'node', 'properties'),
     ('main', 'node', 'attributes'),
     ('main', 'group', 'properties'),
@@ -435,7 +431,7 @@ PARAMETER_SECTIONS = (
 # Parameters section
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(3, 1)
 ))
@@ -459,7 +455,7 @@ topology_template:
           parameter_section=parameter_section, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameters_section_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -483,7 +479,7 @@ topology_template:
 # Parameter
 
 @pytest.mark.skip(reason='fix for capabilities')
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_missing(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -507,7 +503,7 @@ my_parameter: a value
 # Entry schema
 
 @pytest.mark.parametrize('macros,name,parameter_section,values', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.ENTRY_SCHEMA_VALUES,
     counts=(3, 1)
 ))
@@ -543,7 +539,7 @@ my_parameter:
 
 @pytest.mark.skip(reason='fix for capabilities')
 @pytest.mark.parametrize('macros,name,parameter_section,values', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.ENTRY_SCHEMA_VALUES_BAD,
     counts=(3, 1)
 ))
@@ -577,7 +573,7 @@ my_parameter:
           values=values), import_profile=True).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_map_required_field(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -607,7 +603,7 @@ my_parameter:
 
 
 @pytest.mark.skip(reason='fix for capabilities')
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_map_required_field_bad(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -637,7 +633,7 @@ my_parameter:
 
 
 @pytest.mark.parametrize('macros,name,parameter_section,values', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.ENTRY_SCHEMA_VALUES,
     counts=(3, 1)
 ))
@@ -673,7 +669,7 @@ my_parameter:
 
 @pytest.mark.skip(reason='fix for capabilities')
 @pytest.mark.parametrize('macros,name,parameter_section,values', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.ENTRY_SCHEMA_VALUES_BAD,
     counts=(3, 1)
 ))
@@ -707,7 +703,7 @@ my_parameter:
           values=values), import_profile=True).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_list_required_field(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -737,7 +733,7 @@ my_parameter:
 
 
 @pytest.mark.skip(reason='fix for capabilities')
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_list_required_field_bad(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -768,7 +764,7 @@ my_parameter:
 
 # Unicode
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_template_parameter_unicode(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0

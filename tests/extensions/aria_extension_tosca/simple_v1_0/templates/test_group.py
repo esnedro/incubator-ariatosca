@@ -29,7 +29,7 @@ group_types:
   MyType: {}
 topology_template:
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: {{ value }}
 """, dict(value=value)).assert_failure()
@@ -43,7 +43,7 @@ group_types:
   MyType: {}
 topology_template:
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: [ {{ value }} ]
 """, dict(value=value)).assert_failure()
@@ -56,7 +56,7 @@ group_types:
   MyType: {}
 topology_template:
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: []
 """).assert_success()
@@ -78,7 +78,7 @@ topology_template:
     my_node2:
       type: MyType2
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: [ my_node1, my_node2 ]
 """).assert_success()
@@ -99,7 +99,7 @@ topology_template:
     my_node:
       type: MyType2
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: [ my_node ]
 """).assert_success()
@@ -120,7 +120,7 @@ topology_template:
     my_node:
       type: MyType1
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: [ my_node ]
 """).assert_failure()
@@ -133,7 +133,7 @@ group_types:
   MyType: {}
 topology_template:
   groups:
-    my_policy:
+    my_group:
       type: MyType
       members: [ unknown ]
 """).assert_failure()

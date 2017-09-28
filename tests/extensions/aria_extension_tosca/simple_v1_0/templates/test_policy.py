@@ -22,7 +22,7 @@ from .. import data
 # Targets
 
 @pytest.mark.parametrize('value', data.NOT_A_LIST)
-def test_policy_template_targets_syntax_type(parser, value):
+def test_policy_targets_syntax_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -36,7 +36,7 @@ topology_template:
 
 
 @pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_policy_template_targets_syntax_element_type(parser, value):
+def test_policy_targets_syntax_element_type(parser, value):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -49,7 +49,7 @@ topology_template:
 """, dict(value=value)).assert_failure()
 
 
-def test_policy_template_targets_syntax_empty(parser):
+def test_policy_targets_syntax_empty(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -62,7 +62,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_nodes(parser):
+def test_policy_targets_nodes(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -84,7 +84,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_nodes_derived(parser):
+def test_policy_targets_nodes_derived(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -105,7 +105,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_nodes_derived_bad(parser):
+def test_policy_targets_nodes_derived_bad(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -126,7 +126,7 @@ topology_template:
 """).assert_failure()
 
 
-def test_policy_template_targets_groups(parser):
+def test_policy_targets_groups(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:
@@ -148,7 +148,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_groups_derived(parser):
+def test_policy_targets_groups_derived(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:
@@ -169,7 +169,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_groups_derived_bad(parser):
+def test_policy_targets_groups_derived_bad(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 group_types:
@@ -190,7 +190,7 @@ topology_template:
 """).assert_failure()
 
 
-def test_policy_template_targets_nodes_and_groups(parser):
+def test_policy_targets_nodes_and_groups(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -214,7 +214,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_ambiguous(parser):
+def test_policy_targets_ambiguous(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
@@ -238,7 +238,7 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_template_targets_unknown(parser):
+def test_policy_targets_unknown(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 policy_types:
@@ -253,7 +253,7 @@ topology_template:
 
 # Unicode
 
-def test_policy_template_unicode(parser):
+def test_policy_unicode(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:

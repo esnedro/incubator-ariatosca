@@ -20,13 +20,13 @@ from ... import data
 from ......mechanisms.utils import matrix
 
 
-TEMPLATE_NAMES = ('node', 'group', 'relationship', 'policy')
+CASES = ('node', 'group', 'relationship', 'policy')
 
 
 # Templates section
 
 @pytest.mark.parametrize('name,value', matrix(
-    TEMPLATE_NAMES,
+    CASES,
     data.NOT_A_DICT
 ))
 def test_templates_section_syntax_type(parser, name, value):
@@ -37,7 +37,7 @@ topology_template:
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('name', TEMPLATE_NAMES)
+@pytest.mark.parametrize('name', CASES)
 def test_templates_section_syntax_empty(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -48,7 +48,7 @@ topology_template:
 
 # Template
 
-@pytest.mark.parametrize('name', TEMPLATE_NAMES)
+@pytest.mark.parametrize('name', CASES)
 def test_template_syntax_unsupported(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -62,7 +62,7 @@ topology_template:
 # Description
 
 @pytest.mark.parametrize('name,value', matrix(
-    TEMPLATE_NAMES,
+    CASES,
     data.NOT_A_STRING
 ))
 def test_template_description_syntax_type(parser, name, value):
@@ -78,7 +78,7 @@ topology_template:
 # Type
 
 @pytest.mark.parametrize('name,value', matrix(
-    TEMPLATE_NAMES,
+    CASES,
     data.NOT_A_STRING
 ))
 def test_template_type_syntax_type(parser, name, value):
@@ -90,7 +90,7 @@ topology_template:
       type: {{ value }}
 """, dict(section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
-@pytest.mark.parametrize('name', TEMPLATE_NAMES)
+@pytest.mark.parametrize('name', CASES)
 def test_template_type_unknown(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -103,7 +103,7 @@ topology_template:
 
 # Unicode
 
-@pytest.mark.parametrize('name', TEMPLATE_NAMES)
+@pytest.mark.parametrize('name', CASES)
 def test_template_unicode(parser, name):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0

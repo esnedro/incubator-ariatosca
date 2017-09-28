@@ -19,9 +19,6 @@ import pytest
 from ... import data
 
 
-PARAMETER_SECTION_NAMES = ('properties', 'attributes')
-
-
 # Capabilities section
 
 @pytest.mark.parametrize('value', data.NOT_A_DICT)

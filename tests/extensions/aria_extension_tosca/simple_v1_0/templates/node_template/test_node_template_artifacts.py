@@ -18,323 +18,285 @@
 import pytest
 
 from ... import data
+from ......mechanisms.utils import matrix
+
+
+# Artifacts attached to a node template
+TEMPLATE_MACROS = """
+{% macro artifacts() %}
+node_types:
+  MyType: {}
+topology_template:
+  node_templates:
+    my_node:
+      type: MyType
+      artifacts: {{ caller()|indent(8) }}
+{% endmacro %}
+"""
+
+# Artifacts attached to a node type
+TYPE_MACROS = """
+{% macro artifacts() %}
+node_types:
+  MyType:
+    artifacts: {{ caller()|indent(6) }}
+{% endmacro %}
+"""
+
+MACROS = {
+    'template': TEMPLATE_MACROS,
+    'type': TYPE_MACROS
+}
+
+CASES = (
+    'template',
+    'type'
+)
+
 
 
 # Artifacts section
 
-@pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_node_template_artifacts_section_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_DICT))
+def test_node_template_artifacts_section_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts: {{ value }}
+{%- call artifacts() -%}
+{{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifacts_section_syntax_empty(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifacts_section_syntax_empty(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts: {}
+{%- call artifacts() -%}
+{}
+{% endcall %}
 """).assert_success()
 
 
 # Artifact
 
-@pytest.mark.parametrize('value', data.NOT_A_DICT)
-def test_node_template_artifact_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_DICT))
+def test_node_template_artifact_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact: {{ value }}
+{%- call artifacts() %}
+my_artifact: {{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_syntax_unsupported(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_syntax_unsupported(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          unsupported: {}
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  unsupported: {}
+{% endcall %}
 """).assert_failure()
 
 
-def test_node_template_artifact_syntax_empty(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_syntax_empty(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact: {} # "type" and "file" are required
+{%- call artifacts() %}
+my_artifact: {} # "type" and "file" are required
+{% endcall %}
 """).assert_failure()
 
 
 # Type
 
-@pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_template_artifact_type_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_STRING))
+def test_node_template_artifact_type_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: {{ value }}
-          file: a file
+{%- call artifacts() %}
+my_artifact:
+  type: {{ value }}
+  file: a file
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_type_unknown(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_type_unknown(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: UnknownType
-          file: a file
+{%- call artifacts() %}
+my_artifact:
+  type: UnknownType
+  file: a file
+{% endcall %}
 """).assert_failure()
 
 
 # File
 
-@pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_template_artifact_file_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_STRING))
+def test_node_template_artifact_file_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: {{ value }}
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: {{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_file(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_file(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+{% endcall %}
 """).assert_success()
 
 
 # Description
 
-@pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_template_artifact_description_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_STRING))
+def test_node_template_artifact_description_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          description: {{ value }}
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  description: {{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_description(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_description(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          description: a description
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  description: a description
+{% endcall %}
 """).assert_success()
 
 
 # Repository
 
-@pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_template_artifact_repository_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_STRING))
+def test_node_template_artifact_repository_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          repository: {{ value }}
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  repository: {{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_repository_unknown(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_repository_unknown(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          repository: unknown
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  repository: unknown
+{% endcall %}
 """).assert_failure()
 
 
-def test_node_template_artifact_repository(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_repository(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 repositories:
   my_repository:
     url: a url
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          repository: my_repository
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  repository: my_repository
+{% endcall %}
 """).assert_success()
 
 
 # Deploy path
 
-@pytest.mark.parametrize('value', data.NOT_A_STRING)
-def test_node_template_artifact_deploy_path_syntax_type(parser, value):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros,value', matrix(CASES, data.NOT_A_STRING))
+def test_node_template_artifact_deploy_path_syntax_type(parser, macros, value):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          deploy_path: {{ value }}
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  deploy_path: {{ value }}
+{% endcall %}
 """, dict(value=value)).assert_failure()
 
 
-def test_node_template_artifact_deploy_path(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_deploy_path(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 artifact_types:
   MyType: {}
-node_types:
-  MyType: {}
-topology_template:
-  node_templates:
-    my_template:
-      type: MyType
-      artifacts:
-        my_artifact:
-          type: MyType
-          file: a file
-          deploy_path: a path
+{%- call artifacts() %}
+my_artifact:
+  type: MyType
+  file: a file
+  deploy_path: a path
+{% endcall %}
 """).assert_success()
 
 
 # Unicode
 
-def test_node_template_artifact_unicode(parser):
-    parser.parse_literal("""
+@pytest.mark.parametrize('macros', CASES)
+def test_node_template_artifact_unicode(parser, macros):
+    parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
 repositories:
   知識庫:
     url: 網址
 artifact_types:
   類型: {}
-node_types:
-  類型: {}
-topology_template:
-  node_templates:
-    模板:
-      type: 類型
-      artifacts:
-        神器:
-          type: 類型
-          file: 文件
-          repository: 知識庫
-          deploy_path: 路徑
+{%- call artifacts() %}
+神器:
+  type: 類型
+  file: 文件
+  repository: 知識庫
+  deploy_path: 路徑
+{% endcall %}
 """).assert_success()

@@ -14,12 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Unified testing for properties, attributes, and inputs.
+
+Additional tests for properties are in test_type_properties.py.
+
+Note: artifact definitions within node types use parameter assignments rather than definitions, and
+thus are tested not here but under test_template_parameters.py.
+"""
+
 import pytest
 
 from ... import data
 from ......mechanisms.utils import matrix
 
 
+# Defining parameters at a type
 MAIN_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -28,6 +38,7 @@ MAIN_MACROS = """
 {%- endmacro %}
 """
 
+# Defining parameters at a nested type (e.g. inputs of an operation within an interface type)
 NESTED_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -37,6 +48,7 @@ NESTED_MACROS = """
 {%- endmacro %}
 """
 
+# Defining inputs at an interface of a type
 INTERFACE_MACROS = """
 {% macro additions() %}
 interface_types:
@@ -50,6 +62,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Defining inputs at an operation of an interface of a type
 OPERATION_MACROS = """
 {% macro additions() %}
 interface_types:
@@ -64,6 +77,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Defining inputs at an interface of a relationship of a requirement of a node type
 RELATIONSHIP_INTERFACE_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -86,6 +100,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Defining inputs at an operation of an interface of a relationship of a requirement of a node type
 RELATIONSHIP_OPERATION_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -109,6 +124,7 @@ interface_types:
 {%- endmacro %}
 """
 
+# Defining parameters at a capability of a node type
 CAPABILITY_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -132,7 +148,7 @@ MACROS = {
     'capability': CAPABILITY_MACROS
 }
 
-PARAMETER_SECTIONS = (
+CASES = (
     ('main', 'node', 'properties'),
     ('main', 'node', 'attributes'),
     ('main', 'group', 'properties'),
@@ -157,32 +173,11 @@ PARAMETER_SECTIONS = (
     ('capability', 'node', 'attributes')
 )
 
-PROPERTY_SECTIONS = (
-    ('main', 'node', 'properties'),
-    ('main', 'group', 'properties'),
-    ('main', 'relationship', 'properties'),
-    ('main', 'capability', 'properties'),
-    ('main', 'policy', 'properties'),
-    ('main', 'interface', 'inputs'),
-    ('main', 'artifact', 'properties'),
-    ('main', 'data', 'properties'),
-    ('nested', 'interface', 'inputs'),
-    ('interface', 'node', 'inputs'),
-    ('interface', 'group', 'inputs'),
-    ('interface', 'relationship', 'inputs'),
-    ('operation', 'node', 'inputs'),
-    ('operation', 'group', 'inputs'),
-    ('operation', 'relationship', 'inputs'),
-    ('relationship-interface', 'node', 'inputs'),
-    ('relationship-operation', 'node', 'inputs'),
-    ('capability', 'node', 'properties')
-)
-
 
 # Parameters section
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(3, 1)
 ))
@@ -198,7 +193,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 """, dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameters_section_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -214,7 +209,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 # Parameter
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(3, 1)
 ))
@@ -230,7 +225,7 @@ my_parameter: {{ value }}
 """, dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_syntax_empty(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -243,7 +238,7 @@ my_parameter: {} # type is required
 """, dict(name=name, parameter_section=parameter_section)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_syntax_unsupported(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -261,7 +256,7 @@ my_parameter:
 # Description
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.NOT_A_STRING,
     counts=(3, 1)
 ))
@@ -279,7 +274,7 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_description(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -296,7 +291,7 @@ my_parameter:
 
 # Default
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_default(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -311,7 +306,7 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_default_bad(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -326,45 +321,10 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section)).assert_failure()
 
 
-# Required
-
-@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
-    data.NOT_A_BOOL,
-    counts=(3, 1)
-))
-def test_type_parameter_required_syntax_type(parser, macros, name, parameter_section, value):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  required: {{ value }}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
-
-@pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_required(parser, macros, name, parameter_section):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  required: true
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
 # Status
 
 @pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
+    CASES,
     data.STATUSES,
     counts=(3, 1)
 ))
@@ -382,7 +342,7 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section, value=value)).assert_success()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_status_bad(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -397,269 +357,9 @@ my_parameter:
 """, dict(name=name, parameter_section=parameter_section)).assert_failure()
 
 
-# Constraints
-
-@pytest.mark.parametrize('macros,name,parameter_section,value', matrix(
-    PARAMETER_SECTIONS,
-    data.NOT_A_LIST,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_syntax_type(parser, macros, name, parameter_section, value):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints: {{ value }}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, value=value)).assert_failure()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_constraints_syntax_empty(parser, macros, name, parameter_section):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints: []
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_VALUE,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_value(parser, macros, name, parameter_section,
-                                               constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-data_types:
-  MyDataType:
-    properties:
-      my_field:
-        type: string
-{%- if name != 'data' %}
-{{ name }}_types:
-{%- endif %}
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: MyDataType
-  constraints:
-    - {{ constraint }}: {my_field: a string}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_VALUE_LIST,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_value_list(parser, macros, name, parameter_section,
-                                                    constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-data_types:
-  MyDataType:
-    properties:
-      my_field:
-        type: string
-{%- if name != 'data' %}
-{{ name }}_types:
-{%- endif %}
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: MyDataType
-  constraints:
-    - {{ constraint }}:
-      - {my_field: string one}
-      - {my_field: string two}
-      - {my_field: string three}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_VALUE_RANGE,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_value_range(parser, macros, name, parameter_section,
-                                                     constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-data_types:
-  MyDataType:
-    properties:
-      my_field:
-        type: string
-{%- if name != 'data' %}
-{{ name }}_types:
-{%- endif %}
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: MyDataType
-  constraints:
-    - {{ constraint }}:
-      - {my_field: string a}
-      - {my_field: string b}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_VALUE_RANGE,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_value_range_too_many(parser, macros, name,
-                                                              parameter_section, constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-data_types:
-  MyDataType:
-    properties:
-      my_field:
-        type: string
-{%- if name != 'data' %}
-{{ name }}_types:
-{%- endif %}
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: MyDataType
-  constraints:
-    - {{ constraint }}:
-      - {my_field: string a}
-      - {my_field: string b}
-      - {my_field: string c}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_failure()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_VALUE_RANGE,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_value_range_invalid(macros, parser, name,
-                                                             parameter_section, constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-data_types:
-  MyDataType:
-    properties:
-      my_field:
-        type: string
-{%- if name != 'data' %}
-{{ name }}_types:
-{%- endif %}
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: MyDataType
-  constraints:
-    - {{ constraint }}:
-      - {my_field: string b}
-      - {my_field: string a}
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_failure()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_constraints_pattern(parser, macros, name, parameter_section):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints:
-    - pattern: ^pattern$
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_constraints_pattern_bad(parser, macros, name, parameter_section):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints:
-    - pattern: (
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section)).assert_failure()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_NON_NEGATIVE_INT,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_integer(parser, macros, name, parameter_section,
-                                                 constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints:
-    - {{ constraint }}: 1
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section,constraint', matrix(
-    PROPERTY_SECTIONS,
-    data.CONSTRAINTS_WITH_NON_NEGATIVE_INT,
-    counts=(3, 1)
-))
-def test_type_parameter_constraints_with_integer_bad(parser, macros, name, parameter_section,
-                                                     constraint):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  MyType:
-{%- call parameters() %}
-my_parameter:
-  type: string
-  constraints:
-    - {{ constraint }}: -1
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section, constraint=constraint)).assert_failure()
-
-
 # Overriding
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_add(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -679,7 +379,7 @@ my_parameter2:
 """, dict(name=name, parameter_section=parameter_section)).assert_success()
 
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_add_default(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -701,7 +401,7 @@ my_parameter:
 
 
 @pytest.mark.skip(reason='fix for node.capability and node.relationship')
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_type_override(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -728,7 +428,7 @@ my_parameter:
 
 
 @pytest.mark.skip(reason='fix for node.capability and node.relationship')
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_type_override_bad(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -756,7 +456,7 @@ my_parameter:
 
 # Unicode
 
-@pytest.mark.parametrize('macros,name,parameter_section', PARAMETER_SECTIONS)
+@pytest.mark.parametrize('macros,name,parameter_section', CASES)
 def test_type_parameter_unicode(parser, macros, name, parameter_section):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -769,21 +469,5 @@ tosca_definitions_version: tosca_simple_yaml_1_0
   description: 描述
   default: 值
   status: supported
-{% endcall %}
-""", dict(name=name, parameter_section=parameter_section)).assert_success()
-
-
-@pytest.mark.parametrize('macros,name,parameter_section', PROPERTY_SECTIONS)
-def test_type_parameter_constraints_pattern_unicode(parser, macros, name, parameter_section):
-    parser.parse_literal(MACROS[macros] + """
-tosca_definitions_version: tosca_simple_yaml_1_0
-{{- additions() }}
-{{ name }}_types:
-  類型:
-{%- call parameters() %}
-參數:
-  type: string
-  constraints:
-    - pattern: ^模式$
 {% endcall %}
 """, dict(name=name, parameter_section=parameter_section)).assert_success()

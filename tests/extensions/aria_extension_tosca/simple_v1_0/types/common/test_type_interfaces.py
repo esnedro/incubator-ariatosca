@@ -20,6 +20,7 @@ from ... import data
 from ......mechanisms.utils import matrix
 
 
+# Interfaces defined at a type
 MAIN_MACROS = """
 {% macro additions() %}
 {%- endmacro %}
@@ -28,6 +29,7 @@ MAIN_MACROS = """
 {%- endmacro %}
 """
 
+# Interfaces defined (added/overriden) at a relationship of a requirement within a node type
 RELATIONSHIP_MACROS = """
 {% macro additions() %}
 capability_types:
@@ -50,7 +52,7 @@ MACROS = {
     'relationship': RELATIONSHIP_MACROS
 }
 
-INTERFACE_SECTIONS = (
+CASES = (
     ('main', 'node'),
     ('main', 'group'),
     ('main', 'relationship'),
@@ -61,7 +63,7 @@ INTERFACE_SECTIONS = (
 # Interfaces section
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_DICT,
+    CASES, data.NOT_A_DICT,
     counts=(2, 1)
 ))
 def test_type_interfaces_section_syntax_type(parser, macros, name, value):
@@ -78,7 +80,7 @@ interface_types:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interfaces_section_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -94,7 +96,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 # Interface
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_DICT,
+    CASES, data.NOT_A_DICT,
     counts=(2, 1)
 ))
 def test_type_interface_syntax_type(parser, macros, name, value):
@@ -111,7 +113,7 @@ MyInterface: {{ value }}
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -126,7 +128,7 @@ MyInterface: {} # "type" is required
 
 # Type
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_type_override(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -151,7 +153,7 @@ MyInterface:
 
 
 @pytest.mark.skip(reason='fix for node.relationship')
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_type_override_bad(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -178,7 +180,7 @@ MyInterface:
 # Operation
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_DICT_OR_STRING,
+    CASES, data.NOT_A_DICT_OR_STRING,
     counts=(2, 1)
 ))
 def test_type_interface_operation_syntax_type(parser, macros, name, value):
@@ -197,7 +199,7 @@ MyInterface:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_syntax_unsupported(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -215,7 +217,7 @@ MyInterface:
 """, dict(name=name)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -235,7 +237,7 @@ MyInterface:
 # Operation description
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_STRING,
+    CASES, data.NOT_A_STRING,
     counts=(2, 1)
 ))
 def test_type_interface_operation_description_syntax_type(parser, macros, name, value):
@@ -255,7 +257,7 @@ MyInterface:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_description(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -276,7 +278,7 @@ MyInterface:
 # Operation implementation
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_DICT_OR_STRING,
+    CASES, data.NOT_A_DICT_OR_STRING,
     counts=(2, 1)
 ))
 def test_type_interface_operation_implementation_syntax_type(parser, macros, name, value):
@@ -296,7 +298,7 @@ MyInterface:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_implementation_syntax_unsupported(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -315,7 +317,7 @@ MyInterface:
 """, dict(name=name)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_implementation_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -334,7 +336,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_STRING,
+    CASES, data.NOT_A_STRING,
     counts=(2, 1)
 ))
 def test_type_interface_operation_implementation_primary_syntax_type(parser, macros, name, value):
@@ -355,7 +357,7 @@ MyInterface:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_implementation_primary_short_form(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -374,7 +376,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_LIST,
+    CASES, data.NOT_A_LIST,
     counts=(2, 1)
 ))
 def test_type_interface_operation_implementation_dependencies_syntax_type(parser, macros, name,
@@ -398,7 +400,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS, data.NOT_A_STRING,
+    CASES, data.NOT_A_STRING,
     counts=(2, 1)
 ))
 def test_type_interface_operation_implementation_dependencies_syntax_element_type(parser, macros,
@@ -422,7 +424,7 @@ MyInterface:
 """, dict(name=name, value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_operation_implementation_dependencies_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -444,7 +446,7 @@ MyInterface:
 
 # Unicode
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_type_interface_unicode(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0

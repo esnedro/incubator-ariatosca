@@ -110,7 +110,7 @@ MACROS = {
     'relationship-template': RELATIONSHIP_TEMPLATE_MACROS
 }
 
-INTERFACE_SECTIONS = (
+CASES = (
     ('main', 'node'),
     ('main', 'group'),
     ('main', 'relationship'),
@@ -123,7 +123,7 @@ INTERFACE_SECTIONS = (
 # Interfaces section
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(2, 1)
 ))
@@ -148,7 +148,7 @@ topology_template:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interfaces_section_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -173,7 +173,7 @@ topology_template:
 # Interface
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(2, 1)
 ))
@@ -199,7 +199,7 @@ MyInterface: {{ value }}
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -225,7 +225,7 @@ MyInterface: {}
 # Interface input
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_DICT,
     counts=(2, 1)
 ))
@@ -252,7 +252,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_inputs_section_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -278,7 +278,7 @@ MyInterface:
 
 @pytest.mark.skip(reason='fix for relationships')
 @pytest.mark.parametrize('macros,name,type_name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.PARAMETER_VALUES,
     counts=(2, 2)
 ))
@@ -317,7 +317,7 @@ MyInterface:
 
 @pytest.mark.skip(reason='fix for relationships')
 @pytest.mark.parametrize('macros,name,type_name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.PARAMETER_VALUES,
     counts=(2, 2)
 ))
@@ -354,7 +354,7 @@ MyInterface:
           value=value)).assert_success()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_input_missing(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -382,7 +382,7 @@ MyInterface:
 # Operation
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_DICT_OR_STRING,
     counts=(2, 1)
 ))
@@ -410,7 +410,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_syntax_unsupported(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -436,7 +436,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -461,7 +461,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_from_type(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -487,7 +487,7 @@ MyInterface:
 
 
 @pytest.mark.skip(reason='fix for relationships')
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_from_interface_type(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -512,7 +512,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_success()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_missing(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -539,7 +539,7 @@ MyInterface:
 # Operation implementation
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_DICT_OR_STRING,
     counts=(2, 1)
 ))
@@ -568,7 +568,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_implementation_syntax_unsupported(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -595,7 +595,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name])).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_implementation_syntax_empty(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -622,7 +622,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_STRING,
     counts=(2, 1)
 ))
@@ -653,7 +653,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_implementation_primary_short_form(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -680,7 +680,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_LIST,
     counts=(2, 1)
 ))
@@ -712,7 +712,7 @@ MyInterface:
 
 
 @pytest.mark.parametrize('macros,name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.NOT_A_STRING,
     counts=(2, 1)
 ))
@@ -745,7 +745,7 @@ MyInterface:
 """, dict(name=name, section=data.TEMPLATE_NAME_SECTIONS[name], value=value)).assert_failure()
 
 
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_implementation_dependencies_syntax_empty(parser, macros,
                                                                                name):
     parser.parse_literal(MACROS[macros] + """
@@ -777,7 +777,7 @@ MyInterface:
 
 @pytest.mark.skip(reason='fix for relationships')
 @pytest.mark.parametrize('macros,name,type_name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.PARAMETER_VALUES,
     counts=(2, 2)
 ))
@@ -818,7 +818,7 @@ MyInterface:
 
 @pytest.mark.skip(reason='fix for relationships')
 @pytest.mark.parametrize('macros,name,type_name,value', matrix(
-    INTERFACE_SECTIONS,
+    CASES,
     data.PARAMETER_VALUES,
     counts=(2, 2)
 ))
@@ -859,7 +859,7 @@ MyInterface:
 
 
 @pytest.mark.skip(reason='fix')
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_operation_input_missing(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
@@ -889,7 +889,7 @@ MyInterface:
 # Unicode
 
 @pytest.mark.skip(reason='fix for relationships')
-@pytest.mark.parametrize('macros,name', INTERFACE_SECTIONS)
+@pytest.mark.parametrize('macros,name', CASES)
 def test_template_interface_unicode(parser, macros, name):
     parser.parse_literal(MACROS[macros] + """
 tosca_definitions_version: tosca_simple_yaml_1_0
