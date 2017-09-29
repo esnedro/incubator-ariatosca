@@ -31,7 +31,7 @@ topology_template:
     my_node:
       type: MyType
       artifacts: {{ caller()|indent(8) }}
-{% endmacro %}
+{%- endmacro %}
 """
 
 # Artifacts attached to a node type
@@ -40,7 +40,7 @@ TYPE_MACROS = """
 node_types:
   MyType:
     artifacts: {{ caller()|indent(6) }}
-{% endmacro %}
+{%- endmacro %}
 """
 
 MACROS = {

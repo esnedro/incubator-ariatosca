@@ -105,20 +105,20 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_targets_nodes_derived_bad(parser):
+def test_policy_targets_nodes_not_derived(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
 node_types:
-  MyType1: {}
-  MyType2:
-    derived_from: MyType1
+  MyType1:
+    derived_from: MyType2
+  MyType2: {}
 policy_types:
   MyType:
-    targets: [ MyType2 ]
+    targets: [ MyType1 ]
 topology_template:
   node_templates:
     my_node:
-      type: MyType1
+      type: MyType2
   policies:
     my_policy:
       type: MyType
@@ -169,20 +169,20 @@ topology_template:
 """).assert_success()
 
 
-def test_policy_targets_groups_derived_bad(parser):
+def test_policy_targets_groups_not_derived(parser):
     parser.parse_literal("""
 tosca_definitions_version: tosca_simple_yaml_1_0
-group_types:
   MyType1: {}
-  MyType2:
-    derived_from: MyType1
+  MyType1:
+    derived_from: MyType2
+  MyType2: {}
 policy_types:
   MyType:
-    targets: [ MyType2 ]
+    targets: [ MyType1 ]
 topology_template:
   groups:
     my_group:
-      type: MyType1
+      type: MyType2
   policies:
     my_policy:
       type: MyType

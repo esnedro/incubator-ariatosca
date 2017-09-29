@@ -77,7 +77,6 @@ and run::
     # TODO
 
 
-
 To install ``pip``, either use your operating system's package management system, or run::
 
     wget http://bootstrap.pypa.io/get-pip.py
@@ -129,9 +128,10 @@ section).
 Resources
 ---------
 
-- `ARIA homepage <http://ariatosca.incubator.apache.org/>`__
-- `ARIA wiki <https://cwiki.apache.org/confluence/display/AriaTosca>`__
--  `Issue tracker <https://issues.apache.org/jira/browse/ARIA>`__
+- `Site <http://ariatosca.incubator.apache.org/>`__
+- `API and CLI documentation <http://ariatosca.incubator.apache.org/docs/html/>`__ 
+- `Wiki <https://cwiki.apache.org/confluence/display/AriaTosca>`__
+- `Issue tracker <https://issues.apache.org/jira/browse/ARIA>`__
 
 - Dev mailing list: dev@ariatosca.incubator.apache.org
 - User mailing list: user@ariatosca.incubator.apache.org
